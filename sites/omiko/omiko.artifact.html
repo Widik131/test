@@ -705,6 +705,39 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
     }
     /* pasek zaufania i cennik: podniesione tło-panel, żeby dać rytm */
     .band{ background:color-mix(in oklch,var(--bg-elev-1) 55%, transparent); border-block:1px solid var(--surface-line); }
+
+    /* ===== LUDZIE: portret w hero + sekcja zespołu ===== */
+    /* Hero-stage: portret (osoba) OBOK faktury (produkt), z lekkim nachodzeniem */
+    .omk-hero__stage{ position:relative; min-height:460px; }
+    .omk-hero__stage .invoice{ width:min(400px,76%); margin-left:auto; position:relative; z-index:2; }
+    .omk-hero__stage .invoice__body{ padding:var(--space-6); }
+    .omk-hero__stage .invoice__total{ font-size:var(--step-2); }
+    .omk-portrait{ position:absolute; left:0; bottom:-1.5rem; width:210px; margin:0; z-index:3;
+      aspect-ratio:3/4; border-radius:var(--radius-lg); overflow:hidden;
+      border:1px solid var(--surface-line); box-shadow:var(--shadow-lg); }
+    .omk-portrait img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .omk-portrait::after{ content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+      background:linear-gradient(180deg, transparent 45%, color-mix(in oklch,var(--bg) 80%, transparent)); }
+    .omk-portrait__chip{ position:absolute; left:.5rem; right:.5rem; bottom:.5rem; z-index:2;
+      display:flex; flex-direction:column; padding:.5rem .7rem; border-radius:var(--radius);
+      background:color-mix(in oklch,var(--bg) 45%, transparent); backdrop-filter:blur(8px);
+      border:1px solid var(--surface-line); font-size:calc(var(--step--1) - 1px); line-height:1.3; }
+    .omk-portrait__chip b{ font-family:var(--font-display); font-size:var(--step--1); }
+    @media (max-width:980px){
+      .omk-hero__stage{ min-height:0; display:flex; flex-direction:column; align-items:center; gap:0; }
+      .omk-hero__stage .invoice{ width:min(400px,92%); margin:0; order:1; }
+      .omk-portrait{ position:static; order:2; width:180px; margin-top:-2rem; }
+    }
+
+    /* Sekcja zespołu */
+    .people{ --gap:var(--space-6); }
+    .person{ padding:0; overflow:hidden; text-align:left; }
+    .person img{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; filter:saturate(1.02); }
+    .person figcaption{ padding:var(--space-5); display:flex; flex-direction:column; gap:.15rem; }
+    .person figcaption b{ font-family:var(--font-display); font-size:var(--step-1); }
+    .quote{ font-family:var(--font-display); font-size:var(--step-2); line-height:1.3; letter-spacing:-0.02em; }
+    .quote::before{ content:"\201C"; color:var(--accent); }
+    .quote::after{ content:"\201D"; color:var(--accent); }
   </style>
  lub przełącznik.
    ========================================================================== */
@@ -1261,6 +1294,39 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
     }
     /* pasek zaufania i cennik: podniesione tło-panel, żeby dać rytm */
     .band{ background:color-mix(in oklch,var(--bg-elev-1) 55%, transparent); border-block:1px solid var(--surface-line); }
+
+    /* ===== LUDZIE: portret w hero + sekcja zespołu ===== */
+    /* Hero-stage: portret (osoba) OBOK faktury (produkt), z lekkim nachodzeniem */
+    .omk-hero__stage{ position:relative; min-height:460px; }
+    .omk-hero__stage .invoice{ width:min(400px,76%); margin-left:auto; position:relative; z-index:2; }
+    .omk-hero__stage .invoice__body{ padding:var(--space-6); }
+    .omk-hero__stage .invoice__total{ font-size:var(--step-2); }
+    .omk-portrait{ position:absolute; left:0; bottom:-1.5rem; width:210px; margin:0; z-index:3;
+      aspect-ratio:3/4; border-radius:var(--radius-lg); overflow:hidden;
+      border:1px solid var(--surface-line); box-shadow:var(--shadow-lg); }
+    .omk-portrait img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .omk-portrait::after{ content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+      background:linear-gradient(180deg, transparent 45%, color-mix(in oklch,var(--bg) 80%, transparent)); }
+    .omk-portrait__chip{ position:absolute; left:.5rem; right:.5rem; bottom:.5rem; z-index:2;
+      display:flex; flex-direction:column; padding:.5rem .7rem; border-radius:var(--radius);
+      background:color-mix(in oklch,var(--bg) 45%, transparent); backdrop-filter:blur(8px);
+      border:1px solid var(--surface-line); font-size:calc(var(--step--1) - 1px); line-height:1.3; }
+    .omk-portrait__chip b{ font-family:var(--font-display); font-size:var(--step--1); }
+    @media (max-width:980px){
+      .omk-hero__stage{ min-height:0; display:flex; flex-direction:column; align-items:center; gap:0; }
+      .omk-hero__stage .invoice{ width:min(400px,92%); margin:0; order:1; }
+      .omk-portrait{ position:static; order:2; width:180px; margin-top:-2rem; }
+    }
+
+    /* Sekcja zespołu */
+    .people{ --gap:var(--space-6); }
+    .person{ padding:0; overflow:hidden; text-align:left; }
+    .person img{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; filter:saturate(1.02); }
+    .person figcaption{ padding:var(--space-5); display:flex; flex-direction:column; gap:.15rem; }
+    .person figcaption b{ font-family:var(--font-display); font-size:var(--step-1); }
+    .quote{ font-family:var(--font-display); font-size:var(--step-2); line-height:1.3; letter-spacing:-0.02em; }
+    .quote::before{ content:"\201C"; color:var(--accent); }
+    .quote::after{ content:"\201D"; color:var(--accent); }
   </style>
 </head>
 <body class="grain-fixed">
@@ -1303,8 +1369,13 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
             </div>
           </div>
 
-          <!-- Mockup faktury -->
-          <div class="invoice float tilt" data-tilt="6" data-reveal="scale">
+          <!-- Portret założycielki + mockup faktury (człowiek + produkt) -->
+          <div class="omk-hero__stage" data-reveal="scale">
+          <figure class="omk-portrait float">
+            <img src="data:image/webp;base64,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" width="300" height="400" alt="Współzałożycielka Omiko w biurze" />
+            <span class="omk-portrait__chip"><b>Anna Kwiatkowska</b><span class="faint">Współzałożycielka</span></span>
+          </figure>
+          <div class="invoice tilt" data-tilt="6">
             <div class="invoice__bar">
               <span class="invoice__dot"></span><span class="invoice__dot"></span><span class="invoice__dot"></span>
               <span class="mono faint" style="margin-left:auto;font-size:var(--step--1)">FV 2026/07/128</span>
@@ -1324,6 +1395,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
               </div>
               <a class="btn btn-primary btn-block" href="#cennik">Opłać teraz</a>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -1420,6 +1492,38 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
             <div data-reveal><div class="big-num"><span data-count="30" data-suffix="%">0</span></div><p class="faint mono">szybsze płatności</p></div>
             <div data-reveal><div class="big-num"><span data-count="8" data-suffix=" h">0</span></div><p class="faint mono">oszczędzone tygodniowo</p></div>
             <div data-reveal><div class="big-num"><span data-count="99.9" data-suffix="%">0</span></div><p class="faint mono">dostępność systemu</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LUDZIE / ZESPÓŁ =====================
+         DEMO: portrety i nazwiska są przykładowe (AI) — podmień na prawdziwy zespół. -->
+    <section class="section" id="ludzie" data-shot="ludzie">
+      <div class="container">
+        <div class="grid" style="grid-template-columns:0.9fr 1.1fr;gap:var(--space-16);align-items:center">
+          <div class="stack" data-reveal="left">
+            <span class="eyebrow">Zespół</span>
+            <h2>Za Omiko stoją ludzie, nie algorytmy</h2>
+            <p class="quote">Budujemy narzędzie, którego sami chcieliśmy używać — i jesteśmy tu, gdy nas potrzebujesz.</p>
+            <p class="muted">Mały, doświadczony zespół z pasją do finansów i dobrego designu. Znasz nas z imienia, a nie z numeru zgłoszenia.</p>
+            <a class="link-arrow" href="#kontakt">Poznaj cały zespół
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="grid cols-3 people" data-stagger="80">
+            <figure class="card card-hover person" data-reveal>
+              <img src="data:image/webp;base64,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" width="240" height="240" alt="Marek Kowalski, współzałożyciel i CEO Omiko" />
+              <figcaption><b>Marek Kowalski</b><span class="mono faint">Współzałożyciel &amp; CEO</span></figcaption>
+            </figure>
+            <figure class="card card-hover person" data-reveal>
+              <img src="data:image/webp;base64,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" width="240" height="240" alt="Anna Nowak, szefowa produktu w Omiko" />
+              <figcaption><b>Anna Nowak</b><span class="mono faint">Head of Product</span></figcaption>
+            </figure>
+            <figure class="card card-hover person" data-reveal>
+              <img src="data:image/webp;base64,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" width="240" height="240" alt="Piotr Zieliński, szef zespołu inżynierów w Omiko" />
+              <figcaption><b>Piotr Zieliński</b><span class="mono faint">Head of Engineering</span></figcaption>
+            </figure>
           </div>
         </div>
       </div>
