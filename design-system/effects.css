@@ -1,0 +1,148 @@
+/* =============================================================================
+   effects.css — Warstwa "premium": tło mesh, ziarno, poświata, ruch, reveal.
+   To jest to, co odróżnia stronę "z szablonu" od "zrobionej przez designera".
+   Używaj OSZCZĘDNIE — 1-2 mocne efekty na stronę, reszta to cisza. (PRINCIPLES)
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   1. GRADIENT MESH — miękkie, wielobarwne tło. Kładziesz jako ::before sekcji.
+   Klasa .mesh na kontenerze pozycjonowanym (position: relative).
+----------------------------------------------------------------------------- */
+.mesh { position: relative; isolation: isolate; }
+.mesh::before {
+  content: ""; position: absolute; inset: -20% -10%; z-index: -2;
+  background:
+    radial-gradient(40% 55% at 15% 20%, var(--glow-1), transparent 70%),
+    radial-gradient(45% 60% at 85% 15%, var(--glow-2), transparent 72%),
+    radial-gradient(50% 55% at 70% 90%, var(--glow-3), transparent 70%);
+  filter: blur(30px) saturate(125%);
+  opacity: .9;
+  animation: mesh-drift 22s var(--ease-in-out) infinite alternate;
+}
+@keyframes mesh-drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  50%  { transform: translate3d(2%, -2%, 0) scale(1.06); }
+  100% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
+}
+
+/* Aurora — wstęga światła u góry sekcji (subtelniejsza od mesh) */
+.aurora::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: conic-gradient(from 210deg at 50% -20%,
+    transparent, var(--glow-2), transparent 30%,
+    var(--glow-1), transparent 60%);
+  opacity: .5; filter: blur(40px);
+  mask: linear-gradient(to bottom, #000, transparent 65%);
+  -webkit-mask: linear-gradient(to bottom, #000, transparent 65%);
+}
+
+/* -----------------------------------------------------------------------------
+   2. ZIARNO / NOISE — nakładka filmowego szumu. Zabija "plastikowość" gradientów.
+   Klasa .grain na <body> lub sekcji. SVG jako data-URI = zero plików, offline.
+----------------------------------------------------------------------------- */
+.grain::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: .05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+body.grain-fixed::after {
+  content: ""; position: fixed; inset: 0; z-index: var(--z-overlay); pointer-events: none;
+  opacity: .04; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -----------------------------------------------------------------------------
+   3. SIATKA / KRESKI — techniczne tło (dobre pod SaaS / dev / fintech).
+----------------------------------------------------------------------------- */
+.grid-lines { position: relative; }
+.grid-lines::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(var(--surface-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--surface-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  -webkit-mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  opacity: .5;
+}
+.dotgrid::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--surface-line) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+  mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  -webkit-mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  opacity: .6;
+}
+
+/* -----------------------------------------------------------------------------
+   4. POŚWIATA / SPOTLIGHT
+----------------------------------------------------------------------------- */
+.glow-orb { position: absolute; border-radius: 50%; filter: blur(60px); z-index: -1; pointer-events: none; opacity: .6; }
+.glow-orb.a { background: var(--glow-1); }
+.glow-orb.b { background: var(--glow-2); }
+
+/* Spotlight podążający za kursorem — wymaga motion.js (ustawia --mx/--my) */
+.spotlight { position: relative; }
+.spotlight::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%),
+              color-mix(in oklch, var(--accent) 22%, transparent), transparent 60%);
+  opacity: 0; transition: opacity var(--dur-3) var(--ease-out);
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* Obwódka gradientowa (conic) — premium ramka karty/CTA */
+.ring-grad { position: relative; }
+.ring-grad::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: conic-gradient(from 120deg, var(--accent), var(--accent-2), transparent 40%, var(--accent) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: .8; pointer-events: none;
+}
+
+/* -----------------------------------------------------------------------------
+   5. MARQUEE — przewijający się pas (logo, hasła). Pauza na hover.
+----------------------------------------------------------------------------- */
+.marquee { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee__track { display: flex; gap: var(--space-12); width: max-content; animation: marquee var(--speed, 32s) linear infinite; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* -----------------------------------------------------------------------------
+   6. REVEAL ON SCROLL — elementy wjeżdżają miękko. Wymaga motion.js.
+   Domyślnie ukryte; .is-in odsłania. Bez JS (lub reduced-motion) = widoczne.
+----------------------------------------------------------------------------- */
+[data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out); will-change: opacity, transform; }
+[data-reveal].is-in { opacity: 1; transform: none; }
+[data-reveal="left"]  { transform: translateX(-28px); }
+[data-reveal="right"] { transform: translateX(28px); }
+[data-reveal="scale"] { transform: scale(.94); }
+/* Kaskada: [data-reveal] wewnątrz [data-stagger] dostają opóźnienie z motion.js */
+.no-js [data-reveal], .reduce-motion [data-reveal] { opacity: 1; transform: none; }
+
+/* Animowany gradient tekstu (żywy, przesuwający się) */
+.text-flow {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2), var(--accent));
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: text-flow 6s linear infinite;
+}
+@keyframes text-flow { to { background-position: 200% center; } }
+
+/* Pływanie (subtelne unoszenie mockupów/obrazów hero) */
+.float { animation: float 7s var(--ease-in-out) infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+/* Tilt 3D karty — wymaga motion.js (ustawia --rx/--ry) */
+.tilt { transform: perspective(900px) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform var(--dur-2) var(--ease-out); transform-style: preserve-3d; }
+
+/* Podkreślenie "rysowane" pod linkiem nav */
+.underline-grow { position: relative; }
+.underline-grow::after { content: ""; position: absolute; left: 0; bottom: -3px; height: 2px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-2) var(--ease-out); }
+.underline-grow:hover::after { transform: scaleX(1); }
+
+/* Obraz z maską zaokrągloną + delikatna ramka światła */
+.media-frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--surface-line); box-shadow: var(--shadow-lg); position: relative; }
+.media-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 1px 0 oklch(100% 0 0 / .12) inset; pointer-events: none; }

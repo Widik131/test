@@ -1,0 +1,9 @@
+# Zależności
+node_modules/
+
+# Generowane zrzuty z Playwright (odtwarzalne przez: npm run shot)
+**/screenshots/
+
+# Systemowe
+.DS_Store
+*.log

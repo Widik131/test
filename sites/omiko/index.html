@@ -1,0 +1,310 @@
+<!doctype html>
+<!--
+  DEMO Omiko — zbudowane w "Web Design Killer Setup".
+  UWAGA: strona new.omiko.pl była niedostępna (blokada proxy), więc treści są
+  PRZYKŁADOWE (placeholder) dla platformy do fakturowania/e-faktur (KSeF).
+  → Podmień copy, liczby i logotypy na prawdziwe dane Omiko przed użyciem.
+-->
+<html lang="pl" class="no-js" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Omiko — fakturowanie i e-faktury KSeF bez tarcia</title>
+  <meta name="description" content="Omiko automatyzuje fakturowanie, integrację z KSeF i płatności. Wystawiaj, wysyłaj i rozliczaj faktury w kilka sekund." />
+
+  <link rel="stylesheet" href="../../design-system/tokens.css" />
+  <link rel="stylesheet" href="../../design-system/base.css" />
+  <link rel="stylesheet" href="../../design-system/effects.css" />
+
+  <style>
+    /* ===== Charakter Omiko: chłodny granat + elektryczny cyjan-limonka ===== */
+    :root{
+      --accent: oklch(87% 0.17 175);            /* elektryczny akwamaryn */
+      --accent-ink: oklch(18% 0.04 190);
+      --accent-2: oklch(72% 0.15 255);          /* błękit */
+      --glow-1: oklch(87% 0.17 175 / .5);
+      --glow-2: oklch(72% 0.15 255 / .45);
+      --glow-3: oklch(80% 0.15 140 / .28);
+      --bg: oklch(13% 0.02 250);
+    }
+
+    /* Hero: asymetryczny split, treść + żywy mockup faktury */
+    .omk-hero{ padding-block: clamp(6rem,5rem+8vw,11rem) var(--section-y); overflow: clip; }
+    .omk-hero__grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:var(--space-16); align-items:center; }
+    .omk-hero__grid > *{ min-width:0; }   /* pozwól kolumnom zwężać się poniżej min-content (fix mobile) */
+    @media (max-width: 980px){ .omk-hero__grid{ grid-template-columns:1fr; gap:var(--space-12); } }
+    /* Odważny, ale zawijający się nagłówek — nie przekracza szerokości ekranu */
+    .omk-hero h1{ font-size: clamp(2.6rem, 1.4rem + 6vw, 5.6rem); line-height:.98; overflow-wrap:break-word; }
+    .omk-hero__stats{ display:flex; gap:var(--space-8); flex-wrap:wrap; margin-top:var(--space-4); }
+    .omk-hero__stats b{ font-family:var(--font-display); font-size:var(--step-2); display:block; }
+
+    /* Mockup faktury (czysty HTML/CSS — wygląda jak realny UI) */
+    .invoice{ background:var(--bg-elev-1); border:1px solid var(--surface-line); border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-lg); overflow:hidden; }
+    .invoice__bar{ display:flex; align-items:center; gap:.5rem; padding:.9rem 1.1rem; border-bottom:1px solid var(--surface-line);
+      background:var(--bg-elev-2); }
+    .invoice__dot{ width:.7rem; height:.7rem; border-radius:50%; background:var(--ink-faint); opacity:.5; }
+    .invoice__body{ padding:var(--space-8); }
+    .invoice__row{ display:flex; justify-content:space-between; align-items:center; gap:var(--space-6); padding:.7rem 0; border-bottom:1px dashed var(--surface-line); }
+    .invoice__row:last-child{ border-bottom:0; }
+    .invoice__row > span:first-child{ min-width:0; }
+    .invoice .mono, .invoice__total{ white-space:nowrap; }   /* kwoty nigdy się nie łamią */
+    .invoice__total{ font-family:var(--font-display); font-size:var(--step-3); }
+    .invoice__stamp{ display:inline-flex; align-items:center; gap:.5rem; padding:.35rem .7rem; border-radius:var(--radius-full); white-space:nowrap; flex-shrink:0;
+      background:color-mix(in oklch,var(--good) 15%, transparent); color:var(--good); font-family:var(--font-mono); font-size:var(--step--1); }
+    .invoice__stamp::before{ content:""; width:.5rem; height:.5rem; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
+
+    /* Sekcja "jak działa" — połączona linią */
+    .steps{ counter-reset: s; display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-8); }
+    @media (max-width: 900px){ .steps{ grid-template-columns:1fr; } }
+    .step{ position:relative; padding-top:var(--space-8); }
+    .step::before{ counter-increment:s; content:"0" counter(s); font-family:var(--font-mono); font-size:var(--step-2);
+      color:var(--accent); display:block; margin-bottom:var(--space-3); }
+
+    /* Pricing */
+    .price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-6); align-items:start; }
+    @media (max-width: 900px){ .price-grid{ grid-template-columns:1fr; } }
+    .price{ display:flex; flex-direction:column; gap:var(--space-4); }
+    .price--featured{ background:var(--bg-elev-2); }
+    .price__amount{ font-family:var(--font-display); font-size:var(--step-4); line-height:1; }
+    .price ul{ list-style:none; padding:0; display:grid; gap:var(--space-3); }
+    .price li{ display:flex; gap:.6rem; color:var(--ink-soft); }
+    .price li::before{ content:"✓"; color:var(--accent); font-weight:700; }
+
+    .toggle{ display:inline-flex; gap:.25rem; padding:.25rem; border:1px solid var(--surface-line); border-radius:var(--radius-full); }
+    .toggle button{ padding:.5rem 1rem; border-radius:var(--radius-full); color:var(--ink-soft); font-family:var(--font-mono); font-size:var(--step--1); }
+    .toggle button[aria-selected="true"]{ background:var(--accent); color:var(--accent-ink); }
+
+    .big-num{ font-family:var(--font-display); font-size:var(--step-5); line-height:1; color:var(--accent); white-space:nowrap; }
+  </style>
+</head>
+<body class="grain-fixed">
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" data-nav>
+    <div class="container container-wide nav__inner">
+      <a class="nav__logo" href="#top">omiko<span class="hl">.</span></a>
+      <nav class="nav__links" aria-label="Główna">
+        <a class="underline-grow" href="#funkcje">Funkcje</a>
+        <a class="underline-grow" href="#jak">Jak to działa</a>
+        <a class="underline-grow" href="#cennik">Cennik</a>
+        <a class="underline-grow" href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-primary" href="#cennik">Wypróbuj za darmo</a>
+      <button class="nav__burger" data-nav-toggle aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="omk-hero mesh aurora" data-shot="hero">
+      <div class="container container-wide">
+        <div class="omk-hero__grid">
+          <div class="stack" data-stagger="90">
+            <span class="badge badge-dot" data-reveal>Zintegrowane z KSeF</span>
+            <h1 data-reveal>Faktury bez tarcia. <span class="text-flow">Od wystawienia do zapłaty.</span></h1>
+            <p class="lead" data-reveal>Omiko automatyzuje fakturowanie, e-faktury w KSeF i przypomnienia o płatnościach — żebyś odzyskał godziny każdego tygodnia i pieniądze szybciej.</p>
+            <div class="cluster" data-reveal>
+              <a class="btn btn-primary btn-lg" href="#cennik">Zacznij za darmo</a>
+              <a class="btn btn-ghost btn-lg" href="#jak">Zobacz jak działa
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+            <div class="omk-hero__stats" data-reveal>
+              <div><b class="hl"><span data-count="12" data-suffix=" s">0</span></b><span class="faint mono">na wystawienie faktury</span></div>
+              <div><b class="hl"><span data-count="30" data-suffix="%">0</span></b><span class="faint mono">szybsze płatności</span></div>
+              <div><b class="hl"><span data-count="100" data-suffix="%">0</span></b><span class="faint mono">zgodność z KSeF</span></div>
+            </div>
+          </div>
+
+          <!-- Mockup faktury -->
+          <div class="invoice float tilt" data-tilt="6" data-reveal="scale">
+            <div class="invoice__bar">
+              <span class="invoice__dot"></span><span class="invoice__dot"></span><span class="invoice__dot"></span>
+              <span class="mono faint" style="margin-left:auto;font-size:var(--step--1)">FV 2026/07/128</span>
+            </div>
+            <div class="invoice__body stack" style="--flow:var(--space-4)">
+              <div class="between">
+                <div><div class="mono faint" style="font-size:var(--step--1)">Odbiorca</div><strong>Nordic Studio sp. z o.o.</strong></div>
+                <span class="invoice__stamp">wysłano do KSeF</span>
+              </div>
+              <hr class="divider" />
+              <div class="invoice__row"><span class="muted">Wdrożenie systemu</span><span class="mono">8 400,00 zł</span></div>
+              <div class="invoice__row"><span class="muted">Abonament (12 mies.)</span><span class="mono">3 600,00 zł</span></div>
+              <div class="invoice__row"><span class="muted">VAT 23%</span><span class="mono">2 760,00 zł</span></div>
+              <div class="between" style="padding-top:var(--space-3)">
+                <span class="mono faint">Do zapłaty</span>
+                <span class="invoice__total hl">14 760,00 zł</span>
+              </div>
+              <a class="btn btn-primary btn-block" href="#cennik">Opłać teraz</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ZAUFANIE (marquee) ===================== -->
+    <section class="section" style="padding-block:var(--space-12)" data-shot="zaufanie">
+      <div class="container center-text stack" style="--flow:var(--space-8)">
+        <p class="eyebrow no-rule" style="justify-content:center" data-reveal>Zaufały nam zespoły, które nie lubią tracić czasu</p>
+        <div class="marquee" data-reveal>
+          <div class="marquee__track">
+            <span class="mono faint" style="font-size:var(--step-2)">NORDIC</span>
+            <span class="mono faint" style="font-size:var(--step-2)">VOLTA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">KAPPA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">ORBIT</span>
+            <span class="mono faint" style="font-size:var(--step-2)">SENSO</span>
+            <span class="mono faint" style="font-size:var(--step-2)">MERIDIAN</span>
+            <span class="mono faint" style="font-size:var(--step-2)">NORDIC</span>
+            <span class="mono faint" style="font-size:var(--step-2)">VOLTA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">KAPPA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">ORBIT</span>
+            <span class="mono faint" style="font-size:var(--step-2)">SENSO</span>
+            <span class="mono faint" style="font-size:var(--step-2)">MERIDIAN</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FUNKCJE (bento) ===================== -->
+    <section class="section" id="funkcje" data-shot="funkcje">
+      <div class="container container-wide">
+        <div class="stack" style="margin-bottom:var(--space-16);max-width:60ch">
+          <span class="eyebrow" data-reveal>Funkcje</span>
+          <h2 data-reveal>Wszystko, czego potrzebuje Twój obieg faktur — w jednym miejscu</h2>
+        </div>
+        <div class="grid" style="grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(190px,auto)" data-stagger="70">
+          <article class="card card-hover spotlight" style="grid-column:span 2" data-reveal>
+            <span class="badge" style="margin-bottom:var(--space-4)">KSeF</span>
+            <h3>E-faktury zgodne z KSeF, automatycznie</h3>
+            <p class="muted">Wystawiasz w Omiko — my zajmujemy się wysyłką, numeracją i statusami w Krajowym Systemie e-Faktur. Zero ręcznego przepisywania.</p>
+          </article>
+          <article class="card card-hover" data-reveal>
+            <h3>Płatności online</h3>
+            <p class="muted">Link do zapłaty w każdej fakturze. Klient płaci jednym kliknięciem.</p>
+          </article>
+          <article class="card card-hover" data-reveal>
+            <h3>Przypomnienia</h3>
+            <p class="muted">Automatyczne monity o terminach — grzecznie, ale skutecznie.</p>
+          </article>
+          <article class="card card-hover spotlight" style="grid-column:span 2" data-reveal>
+            <h3>Raporty i rozliczenia w czasie rzeczywistym</h3>
+            <p class="muted">Widzisz przepływy, zaległości i prognozy gotówki. Eksport dla księgowości jednym kliknięciem.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== JAK TO DZIAŁA ===================== -->
+    <section class="section grid-lines" id="jak" data-shot="jak">
+      <div class="container">
+        <div class="stack center-text" style="margin-bottom:var(--space-16)">
+          <span class="eyebrow" style="justify-content:center" data-reveal>Jak to działa</span>
+          <h2 data-reveal>Trzy kroki do faktury opłaconej na czas</h2>
+        </div>
+        <div class="steps" data-stagger="120">
+          <div class="step stack" data-reveal><h3>Wystaw</h3><p class="muted">Wybierz klienta, dodaj pozycje. Omiko podpowiada dane i liczy VAT.</p></div>
+          <div class="step stack" data-reveal><h3>Wyślij</h3><p class="muted">Faktura trafia do KSeF i do klienta z linkiem do płatności — automatycznie.</p></div>
+          <div class="step stack" data-reveal><h3>Rozlicz</h3><p class="muted">Śledzisz status, dostajesz powiadomienie o zapłacie, księgowość ma komplet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATYSTYKI ===================== -->
+    <section class="section" data-shot="statystyki">
+      <div class="container">
+        <div class="card mesh ring-grad" style="padding:var(--space-20)">
+          <div class="grid cols-4 keep-2 center-text" data-stagger="90">
+            <div data-reveal><div class="big-num"><span data-count="12" data-suffix=" s">0</span></div><p class="faint mono">średni czas faktury</p></div>
+            <div data-reveal><div class="big-num"><span data-count="30" data-suffix="%">0</span></div><p class="faint mono">szybsze płatności</p></div>
+            <div data-reveal><div class="big-num"><span data-count="8" data-suffix=" h">0</span></div><p class="faint mono">oszczędzone tygodniowo</p></div>
+            <div data-reveal><div class="big-num"><span data-count="99.9" data-suffix="%">0</span></div><p class="faint mono">dostępność systemu</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CENNIK ===================== -->
+    <section class="section" id="cennik" data-shot="cennik">
+      <div class="container">
+        <div class="stack center-text" style="margin-bottom:var(--space-12)">
+          <span class="eyebrow" style="justify-content:center" data-reveal>Cennik</span>
+          <h2 data-reveal>Prosto. Bez ukrytych kosztów.</h2>
+          <div style="margin-inline:auto" data-reveal>
+            <div class="toggle" data-tabs role="tablist" aria-label="Okres rozliczenia">
+              <button role="tab" aria-selected="true">Miesięcznie</button>
+              <button role="tab" aria-selected="false">Rocznie −20%</button>
+            </div>
+          </div>
+        </div>
+        <div class="price-grid" data-stagger="80">
+          <article class="card price" data-reveal>
+            <div><span class="mono faint">Start</span><div class="price__amount">0 zł</div><span class="faint">dla jednoosobowych firm</span></div>
+            <ul><li>Do 10 faktur / mies.</li><li>E-faktury KSeF</li><li>Link do płatności</li></ul>
+            <a class="btn btn-ghost btn-block" href="#">Zacznij za darmo</a>
+          </article>
+          <article class="card price price--featured ring-grad" data-reveal="scale">
+            <div class="between"><span class="mono hl">Pro</span><span class="badge">Najczęściej wybierany</span></div>
+            <div class="price__amount hl">79 zł<span class="faint" style="font-size:var(--step-0)"> /mies.</span></div>
+            <ul><li>Faktury bez limitu</li><li>Automatyczne przypomnienia</li><li>Raporty i prognoza gotówki</li><li>Wielu użytkowników</li></ul>
+            <a class="btn btn-primary btn-block" href="#">Wybierz Pro</a>
+          </article>
+          <article class="card price" data-reveal>
+            <div><span class="mono faint">Biznes</span><div class="price__amount">na wycenę</div><span class="faint">dla zespołów i biur</span></div>
+            <ul><li>Wszystko z Pro</li><li>Integracje i API</li><li>Dedykowane wsparcie</li></ul>
+            <a class="btn btn-ghost btn-block" href="#">Porozmawiajmy</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="section" id="faq" data-shot="faq">
+      <div class="container container-narrow stack" data-stagger="60">
+        <h2 class="center-text" data-reveal>Częste pytania</h2>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Czy Omiko jest zgodne z KSeF?</summary><p class="muted" style="margin-top:var(--space-3)">Tak — faktury wystawione w Omiko są wysyłane do Krajowego Systemu e-Faktur, z pełną obsługą numeracji i statusów.</p></details>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Czy mogę przenieść dane z innego programu?</summary><p class="muted" style="margin-top:var(--space-3)">Tak, import kontrahentów i historii faktur z pliku lub przez integrację.</p></details>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Jak działają płatności online?</summary><p class="muted" style="margin-top:var(--space-3)">Do każdej faktury dołączamy bezpieczny link do zapłaty; status aktualizuje się automatycznie.</p></details>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Czy jest okres próbny?</summary><p class="muted" style="margin-top:var(--space-3)">Plan Start jest darmowy bezterminowo, a Pro możesz przetestować bez zobowiązań.</p></details>
+      </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="section" data-shot="cta">
+      <div class="container">
+        <div class="card mesh center-text stack ring-grad" style="padding:clamp(3rem,2rem+6vw,7rem)" data-reveal="scale">
+          <h2 class="display" style="font-size:var(--step-4)">Wystaw pierwszą fakturę w Omiko już dziś</h2>
+          <p class="lead" style="margin-inline:auto">Za darmo, bez karty. Zobacz, ile czasu odzyskasz.</p>
+          <div class="cluster" style="justify-content:center">
+            <a class="btn btn-primary btn-lg" href="#">Załóż darmowe konto</a>
+            <a class="btn btn-ghost btn-lg" href="#funkcje">Zobacz funkcje</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container container-wide stack" style="--flow:var(--space-8)">
+      <div class="grid cols-4 keep-2">
+        <div class="col" style="--flow:var(--space-3)">
+          <a class="nav__logo" href="#top">omiko<span class="hl">.</span></a>
+          <p class="faint" style="max-width:32ch">Fakturowanie i e-faktury KSeF, które oszczędzają Twój czas.</p>
+        </div>
+        <div class="col" style="--flow:var(--space-2)"><span class="mono faint">Produkt</span><a class="muted underline-grow" href="#funkcje">Funkcje</a><a class="muted underline-grow" href="#cennik">Cennik</a><a class="muted underline-grow" href="#faq">FAQ</a></div>
+        <div class="col" style="--flow:var(--space-2)"><span class="mono faint">Firma</span><a class="muted underline-grow" href="#">O nas</a><a class="muted underline-grow" href="#">Kontakt</a><a class="muted underline-grow" href="#">Blog</a></div>
+        <div class="col" style="--flow:var(--space-2)"><span class="mono faint">Kontakt</span><a class="muted underline-grow" href="mailto:kontakt@omiko.pl">kontakt@omiko.pl</a></div>
+      </div>
+      <hr class="divider" />
+      <div class="between">
+        <p class="faint">© 2026 Omiko. Wszelkie prawa zastrzeżone.</p>
+        <p class="faint mono">demo · Web Design Killer Setup</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../design-system/motion.js" defer></script>
+</body>
+</html>

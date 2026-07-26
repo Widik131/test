@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pl" class="no-js" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Starter — nazwa projektu</title>
+  <meta name="description" content="Krótki opis strony (SEO + podgląd)." />
+
+  <!-- Design-system: kolejność ma znaczenie (tokens → base → effects) -->
+  <link rel="stylesheet" href="../../design-system/tokens.css" />
+  <link rel="stylesheet" href="../../design-system/base.css" />
+  <link rel="stylesheet" href="../../design-system/effects.css" />
+
+  <!-- Style specyficzne dla TEJ strony (nadpisania, unikalny charakter) -->
+  <style>
+    /* Tu nadaj stronie oryginalny charakter: własne tło hero, layout sekcji,
+       nietypowe siatki. Trzymaj tokeny z tokens.css, ale nie bój się łamać rytmu. */
+  </style>
+</head>
+<body class="grain-fixed">
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" data-nav>
+    <div class="container nav__inner">
+      <a class="nav__logo" href="#">Marka</a>
+      <nav class="nav__links" aria-label="Główna">
+        <a class="underline-grow" href="#o-nas">O nas</a>
+        <a class="underline-grow" href="#uslugi">Usługi</a>
+        <a class="underline-grow" href="#kontakt">Kontakt</a>
+      </nav>
+      <a class="btn btn-primary" href="#kontakt">Zacznij</a>
+      <button class="nav__burger" data-nav-toggle aria-label="Menu" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="section hero mesh aurora" data-shot="hero">
+      <div class="container center-text stack" data-stagger="90">
+        <span class="eyebrow" data-reveal>Eyebrow / kategoria</span>
+        <h1 class="display" data-reveal>
+          Mocny nagłówek, który <span class="hl-grad">sprzedaje</span> w 6 słowach
+        </h1>
+        <p class="lead" data-reveal>
+          Jedno zdanie wartości. Konkret, nie ogólnik. Dla kogo i po co.
+        </p>
+        <div class="cluster" style="justify-content:center" data-reveal>
+          <a class="btn btn-primary btn-lg" href="#kontakt">Główne CTA</a>
+          <a class="btn btn-ghost btn-lg" href="#uslugi">Drugie CTA</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SEKCJA ===================== -->
+    <section class="section" id="uslugi" data-shot="uslugi">
+      <div class="container">
+        <div class="stack center-text" style="margin-bottom:var(--space-16)">
+          <span class="eyebrow" data-reveal>Sekcja</span>
+          <h2 data-reveal>Nagłówek sekcji</h2>
+        </div>
+        <div class="grid cols-3" data-stagger="80">
+          <article class="card card-hover" data-reveal>
+            <h3>Tytuł</h3>
+            <p class="muted">Opis korzyści dla klienta.</p>
+          </article>
+          <article class="card card-hover" data-reveal>
+            <h3>Tytuł</h3>
+            <p class="muted">Opis korzyści dla klienta.</p>
+          </article>
+          <article class="card card-hover" data-reveal>
+            <h3>Tytuł</h3>
+            <p class="muted">Opis korzyści dla klienta.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" id="kontakt">
+    <div class="container between">
+      <p class="faint">© 2026 Marka</p>
+      <p class="faint mono">zbudowane w Web Design Killer Setup</p>
+    </div>
+  </footer>
+
+  <script src="../../design-system/motion.js" defer></script>
+</body>
+</html>

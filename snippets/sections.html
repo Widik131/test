@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pl" class="no-js" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snippety sekcji — kopiuj i wklejaj</title>
+  <link rel="stylesheet" href="../design-system/tokens.css" />
+  <link rel="stylesheet" href="../design-system/base.css" />
+  <link rel="stylesheet" href="../design-system/effects.css" />
+  <style>
+    .snip-label{position:sticky;top:0;z-index:50;background:var(--bg-elev-2);border-bottom:1px solid var(--surface-line);
+      padding:var(--space-3) var(--gutter);font-family:var(--font-mono);font-size:var(--step--1);color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
+    .snip{border-bottom:8px solid var(--bg-elev-2)}
+  </style>
+</head>
+<body class="grain-fixed">
+<p class="snip-label">Galeria snippetów — otwórz ten plik i podglądaj/kopiuj bloki. Każdy działa na design-system.</p>
+
+<!-- ============ SNIPPET: NAV (przyklejony, zmiana po scrollu) ============ -->
+<div class="snip">
+<p class="snip-label">nav</p>
+<header class="nav" data-nav>
+  <div class="container nav__inner">
+    <a class="nav__logo" href="#">Marka</a>
+    <nav class="nav__links"><a class="underline-grow" href="#">Produkt</a><a class="underline-grow" href="#">Cennik</a><a class="underline-grow" href="#">Kontakt</a></nav>
+    <a class="btn btn-primary" href="#">Zacznij</a>
+  </div>
+</header>
+</div>
+
+<!-- ============ SNIPPET: HERO typograficzne ============ -->
+<div class="snip">
+<p class="snip-label">hero — typograficzne</p>
+<section class="section mesh aurora">
+  <div class="container center-text stack" data-stagger="90">
+    <span class="eyebrow" data-reveal>Kategoria</span>
+    <h1 class="display" data-reveal>Wielki nagłówek, <span class="hl-grad">jeden pomysł</span>, maksymalny efekt</h1>
+    <p class="lead" data-reveal>Jedno zdanie wartości: dla kogo i po co.</p>
+    <div class="cluster" style="justify-content:center" data-reveal><a class="btn btn-primary btn-lg" href="#">Główne CTA</a><a class="btn btn-ghost btn-lg" href="#">Drugie</a></div>
+  </div>
+</section>
+</div>
+
+<!-- ============ SNIPPET: HERO split (tekst + media) ============ -->
+<div class="snip">
+<p class="snip-label">hero — split asymetryczny</p>
+<section class="section">
+  <div class="container grid" style="grid-template-columns:1.1fr .9fr;gap:var(--space-16);align-items:center">
+    <div class="stack" data-stagger="90">
+      <span class="eyebrow" data-reveal>Kategoria</span>
+      <h1 data-reveal>Nagłówek po lewej, dowód po prawej</h1>
+      <p class="lead" data-reveal>Konkretne zdanie wartości.</p>
+      <div class="cluster" data-reveal><a class="btn btn-primary btn-lg" href="#">CTA</a></div>
+    </div>
+    <div class="media-frame float tilt" data-tilt="8" data-reveal="scale" style="aspect-ratio:4/3;background:linear-gradient(135deg,var(--bg-elev-2),var(--bg-elev-1));display:grid;place-items:center">
+      <span class="mono faint">← podmień na obraz z Higgsfield</span>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ============ SNIPPET: pasek zaufania (marquee) ============ -->
+<div class="snip">
+<p class="snip-label">logo marquee</p>
+<section class="section" style="padding-block:var(--space-12)">
+  <div class="container center-text stack" style="--flow:var(--space-8)">
+    <p class="eyebrow no-rule" style="justify-content:center">Zaufali nam</p>
+    <div class="marquee"><div class="marquee__track">
+      <span class="mono faint" style="font-size:var(--step-2)">ACME</span><span class="mono faint" style="font-size:var(--step-2)">NORDIC</span><span class="mono faint" style="font-size:var(--step-2)">VOLT</span><span class="mono faint" style="font-size:var(--step-2)">KAPPA</span><span class="mono faint" style="font-size:var(--step-2)">ORBIT</span>
+      <span class="mono faint" style="font-size:var(--step-2)">ACME</span><span class="mono faint" style="font-size:var(--step-2)">NORDIC</span><span class="mono faint" style="font-size:var(--step-2)">VOLT</span><span class="mono faint" style="font-size:var(--step-2)">KAPPA</span><span class="mono faint" style="font-size:var(--step-2)">ORBIT</span>
+    </div></div>
+  </div>
+</section>
+</div>
+
+<!-- ============ SNIPPET: bento features ============ -->
+<div class="snip">
+<p class="snip-label">features — bento</p>
+<section class="section">
+  <div class="container">
+    <div class="stack center-text" style="margin-bottom:var(--space-16)"><span class="eyebrow" data-reveal>Możliwości</span><h2 data-reveal>Nagłówek sekcji</h2></div>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(180px,auto)" data-stagger="70">
+      <article class="card card-hover spotlight" style="grid-column:span 2" data-reveal><h3>Duży kafel</h3><p class="muted">Najważniejsza korzyść zajmuje więcej miejsca — hierarchia.</p></article>
+      <article class="card card-hover" data-reveal><h3>Kafel</h3><p class="muted">Korzyść.</p></article>
+      <article class="card card-hover" data-reveal><h3>Kafel</h3><p class="muted">Korzyść.</p></article>
+      <article class="card card-hover" style="grid-column:span 2" data-reveal><h3>Duży kafel</h3><p class="muted">Kolejny akcent.</p></article>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ============ SNIPPET: statystyki (liczniki) ============ -->
+<div class="snip">
+<p class="snip-label">stats — liczniki</p>
+<section class="section">
+  <div class="container grid cols-4 keep-2 center-text" data-stagger="80">
+    <div data-reveal><div class="display hl" style="font-size:var(--step-4)"><span data-count="14">0</span></div><p class="faint mono">dni wdrożenia</p></div>
+    <div data-reveal><div class="display hl" style="font-size:var(--step-4)"><span data-count="99.9" data-suffix="%">0</span></div><p class="faint mono">dostępności</p></div>
+    <div data-reveal><div class="display hl" style="font-size:var(--step-4)"><span data-count="4200" data-suffix="+">0</span></div><p class="faint mono">klientów</p></div>
+    <div data-reveal><div class="display hl" style="font-size:var(--step-4)"><span data-count="24" data-suffix="/7">0</span></div><p class="faint mono">wsparcie</p></div>
+  </div>
+</section>
+</div>
+
+<!-- ============ SNIPPET: CTA z obwódką gradientową ============ -->
+<div class="snip">
+<p class="snip-label">cta — ring gradient</p>
+<section class="section">
+  <div class="container">
+    <div class="card ring-grad center-text stack mesh" style="padding:var(--space-20)" data-reveal="scale">
+      <h2>Gotowy, by zacząć?</h2>
+      <p class="lead" style="margin-inline:auto">Krótkie zdanie domykające.</p>
+      <div class="cluster" style="justify-content:center"><a class="btn btn-primary btn-lg" href="#">Załóż konto</a></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ============ SNIPPET: FAQ (details) ============ -->
+<div class="snip">
+<p class="snip-label">faq — details</p>
+<section class="section">
+  <div class="container container-narrow stack" data-stagger="60">
+    <h2 class="center-text" data-reveal>Częste pytania</h2>
+    <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Pytanie pierwsze?</summary><p class="muted" style="margin-top:var(--space-3)">Odpowiedź konkretna.</p></details>
+    <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Pytanie drugie?</summary><p class="muted" style="margin-top:var(--space-3)">Odpowiedź konkretna.</p></details>
+  </div>
+</section>
+</div>
+
+<script src="../design-system/motion.js" defer></script>
+</body>
+</html>

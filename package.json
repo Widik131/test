@@ -1,0 +1,14 @@
+{
+  "name": "web-design-killer-setup",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "System do projektowania oryginalnych, klikalnych stron-demo w HTML (bez hostowania) z pętlą wizualną Playwright + assety Higgsfield.",
+  "scripts": {
+    "shot": "node scripts/shoot.mjs",
+    "serve": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

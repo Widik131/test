@@ -1,0 +1,189 @@
+/* =============================================================================
+   tokens.css — Fundament wizualny systemu
+   -----------------------------------------------------------------------------
+   Jedno źródło prawdy dla kolorów, typografii, przestrzeni, cieni i ruchu.
+   Zmieniasz stronę wizualnie? Najpierw sięgasz TUTAJ, nie do komponentów.
+
+   Zasada: strona ma wyglądać jak zrobiona przez najlepszego designera —
+   dlatego skala jest matematyczna (modularna), a nie "na oko".
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------------------
+     1. KOLOR — motyw ciemny (domyślny, "editorial dark")
+     Używamy OKLCH tam, gdzie chcemy spójnej jasności między odcieniami.
+     Neutralne to NIE czysta szarość — mają lekki, celowy podton (tu: chłodny).
+  --------------------------------------------------------------------------- */
+  --bg:            oklch(14.5% 0.012 265);   /* tło strony — prawie czarne, chłodne */
+  --bg-elev-1:     oklch(17.5% 0.014 265);   /* karty, panele */
+  --bg-elev-2:     oklch(21%   0.016 265);   /* hover / wyższe warstwy */
+  --surface-line:  oklch(28%   0.02  265 / .7);/* subtelne obrysy 1px */
+
+  --ink:           oklch(97%   0.006 265);   /* główny tekst */
+  --ink-soft:      oklch(78%   0.012 265);   /* tekst drugorzędny */
+  --ink-faint:     oklch(60%   0.014 265);   /* podpisy, meta */
+
+  /* Akcent — DOMYŚLNIE żywy elektryczny cytryn/limonka na granacie.
+     To celowo NIE jest typowy "AI-fioletowy". Zmień 3 zmienne = nowa marka. */
+  --accent:        oklch(88% 0.19 118);      /* limonkowy neon */
+  --accent-ink:    oklch(20% 0.05 118);      /* tekst NA akcencie (ciemny) */
+  --accent-2:      oklch(70% 0.16 250);      /* wsparcie: elektryczny błękit */
+
+  /* Semantyczne */
+  --good:          oklch(80% 0.16 150);
+  --warn:          oklch(83% 0.15 85);
+  --bad:           oklch(68% 0.20 25);
+
+  /* Gradient-mesh / glow — używane przez effects.css */
+  --glow-1:        oklch(88% 0.19 118 / .55);
+  --glow-2:        oklch(70% 0.16 250 / .45);
+  --glow-3:        oklch(72% 0.20 330 / .30);
+
+  color-scheme: dark;
+
+  /* ---------------------------------------------------------------------------
+     2. TYPOGRAFIA
+     Font display kontra tekst = kontrast, który daje "redakcyjny" charakter.
+     Stack systemowy = zero zależności, działa offline (patrz PRINCIPLES.md,
+     sekcja o osadzaniu własnych fontów woff2 dla maks. oryginalności).
+  --------------------------------------------------------------------------- */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system,
+                  "Segoe UI", Roboto, sans-serif;
+  --font-text:    ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                  Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
+                  Menlo, Consolas, monospace;
+
+  /* Skala typograficzna — modularna (≈1.25, "major third"), płynna (clamp).
+     min = mobile, max = desktop. Nigdy nie ustawiaj px "z palca" w komponencie. */
+  --step--1: clamp(0.83rem, 0.80rem + 0.15vw, 0.92rem);
+  --step-0:  clamp(1.00rem, 0.95rem + 0.25vw, 1.13rem);   /* tekst bazowy */
+  --step-1:  clamp(1.25rem, 1.15rem + 0.50vw, 1.55rem);
+  --step-2:  clamp(1.56rem, 1.40rem + 0.90vw, 2.20rem);
+  --step-3:  clamp(1.95rem, 1.65rem + 1.60vw, 3.10rem);
+  --step-4:  clamp(2.44rem, 1.95rem + 2.70vw, 4.40rem);
+  --step-5:  clamp(3.05rem, 2.20rem + 4.60vw, 6.30rem);   /* hero */
+  --step-6:  clamp(3.60rem, 2.10rem + 7.80vw, 9.00rem);   /* mega display */
+
+  --leading-tight:  1.02;   /* wielkie nagłówki */
+  --leading-snug:   1.14;
+  --leading-normal: 1.6;    /* tekst */
+  --tracking-tight: -0.03em;
+  --tracking-wide:  0.14em; /* eyebrow / mono label */
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   700;
+
+  /* ---------------------------------------------------------------------------
+     3. PRZESTRZEŃ — skala 4px, nazwana. Rytm > przypadek.
+  --------------------------------------------------------------------------- */
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* Rytm sekcji — płynny odstęp pionowy między sekcjami */
+  --section-y: clamp(4rem, 3rem + 6vw, 9rem);
+
+  /* ---------------------------------------------------------------------------
+     4. UKŁAD
+  --------------------------------------------------------------------------- */
+  --measure:      68ch;     /* max. szerokość akapitu (czytelność) */
+  --container:    1200px;   /* domyślny kontener */
+  --container-wide: 1440px;
+  --gutter:       clamp(1.25rem, 0.5rem + 3.5vw, 3rem);
+
+  /* ---------------------------------------------------------------------------
+     5. ZAOKRĄGLENIA
+  --------------------------------------------------------------------------- */
+  --radius-sm: 0.5rem;
+  --radius:    0.875rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 999px;
+
+  /* ---------------------------------------------------------------------------
+     6. CIENIE — WIELOWARSTWOWE (klucz do premium głębi).
+     Pojedynczy box-shadow wygląda tanio. Warstwy = realistyczne światło.
+  --------------------------------------------------------------------------- */
+  --shadow-sm:
+    0 1px 2px oklch(0% 0 0 / .30),
+    0 1px 1px oklch(0% 0 0 / .20);
+  --shadow:
+    0 2px 4px oklch(0% 0 0 / .25),
+    0 8px 16px oklch(0% 0 0 / .30),
+    0 1px 0 oklch(100% 0 0 / .04) inset;
+  --shadow-lg:
+    0 4px 8px oklch(0% 0 0 / .25),
+    0 16px 32px oklch(0% 0 0 / .35),
+    0 32px 64px oklch(0% 0 0 / .30),
+    0 1px 0 oklch(100% 0 0 / .05) inset;
+  --shadow-glow:
+    0 0 0 1px var(--accent),
+    0 0 30px -6px var(--glow-1),
+    0 12px 40px -12px var(--glow-1);
+
+  /* ---------------------------------------------------------------------------
+     7. RUCH — spójne czasy i krzywe. "Designerski" ruch = szybki + miękki.
+  --------------------------------------------------------------------------- */
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);      /* wejścia */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* mikro-odbicie */
+  --dur-1: 0.15s;
+  --dur-2: 0.3s;
+  --dur-3: 0.55s;
+  --dur-4: 0.9s;
+
+  /* Warstwy z */
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+}
+
+/* =============================================================================
+   MOTYW JASNY — dodaj <body data-theme="light"> lub przełącznik.
+   ========================================================================== */
+:root[data-theme="light"],
+[data-theme="light"] {
+  --bg:           oklch(98.5% 0.004 265);
+  --bg-elev-1:    oklch(100%  0     0);
+  --bg-elev-2:    oklch(96.5% 0.004 265);
+  --surface-line: oklch(80%   0.01  265 / .8);
+
+  --ink:          oklch(20%   0.02  265);
+  --ink-soft:     oklch(40%   0.02  265);
+  --ink-faint:    oklch(55%   0.02  265);
+
+  --accent:       oklch(58% 0.18 260);      /* w jasnym: głębszy, by miał kontrast */
+  --accent-ink:   oklch(99% 0.01 260);
+  --accent-2:     oklch(62% 0.17 200);
+
+  --glow-1:       oklch(70% 0.18 260 / .28);
+  --glow-2:       oklch(65% 0.16 200 / .22);
+  --glow-3:       oklch(72% 0.20 330 / .16);
+
+  color-scheme: light;
+
+  --shadow-sm: 0 1px 2px oklch(30% 0.03 265 / .10), 0 1px 1px oklch(30% 0.03 265 / .06);
+  --shadow:    0 2px 4px oklch(30% 0.03 265 / .08), 0 10px 24px oklch(30% 0.03 265 / .10);
+  --shadow-lg: 0 4px 8px oklch(30% 0.03 265 / .08), 0 20px 48px oklch(30% 0.03 265 / .14),
+               0 40px 80px oklch(30% 0.03 265 / .10);
+}
+
+/* =============================================================================
+   ALTERNATYWNE PALETY AKCENTU — dodaj klasę na <body> by zmienić nastrój marki.
+   To pozwala z jednego systemu robić WIZUALNIE RÓŻNE strony (anty-generyczność).
+   ========================================================================== */
+.accent-ember  { --accent: oklch(72% 0.20 45);  --accent-ink: oklch(18% 0.05 45);  --accent-2: oklch(70% 0.17 25);  --glow-1: oklch(72% 0.20 45 / .55); }
+.accent-violet { --accent: oklch(72% 0.19 300); --accent-ink: oklch(98% 0.02 300); --accent-2: oklch(70% 0.16 260); --glow-1: oklch(72% 0.19 300 / .5); }
+.accent-cyan   { --accent: oklch(85% 0.15 195); --accent-ink: oklch(20% 0.05 220); --accent-2: oklch(70% 0.16 250); --glow-1: oklch(85% 0.15 195 / .5); }
+.accent-gold   { --accent: oklch(84% 0.14 90);  --accent-ink: oklch(20% 0.05 80);  --accent-2: oklch(72% 0.12 40);  --glow-1: oklch(84% 0.14 90 / .5); }
+.accent-rose   { --accent: oklch(75% 0.18 15);  --accent-ink: oklch(99% 0.02 15);  --accent-2: oklch(70% 0.16 330); --glow-1: oklch(75% 0.18 15 / .5); }
