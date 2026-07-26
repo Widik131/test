@@ -1,0 +1,1495 @@
+<div class="grain-fixed" aria-hidden="true"></div>
+<style data-from="../../design-system/tokens.css">
+/* =============================================================================
+   tokens.css — Fundament wizualny systemu
+   -----------------------------------------------------------------------------
+   Jedno źródło prawdy dla kolorów, typografii, przestrzeni, cieni i ruchu.
+   Zmieniasz stronę wizualnie? Najpierw sięgasz TUTAJ, nie do komponentów.
+
+   Zasada: strona ma wyglądać jak zrobiona przez najlepszego designera —
+   dlatego skala jest matematyczna (modularna), a nie "na oko".
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------------------
+     1. KOLOR — motyw ciemny (domyślny, "editorial dark")
+     Używamy OKLCH tam, gdzie chcemy spójnej jasności między odcieniami.
+     Neutralne to NIE czysta szarość — mają lekki, celowy podton (tu: chłodny).
+  --------------------------------------------------------------------------- */
+  --bg:            oklch(14.5% 0.012 265);   /* tło strony — prawie czarne, chłodne */
+  --bg-elev-1:     oklch(17.5% 0.014 265);   /* karty, panele */
+  --bg-elev-2:     oklch(21%   0.016 265);   /* hover / wyższe warstwy */
+  --surface-line:  oklch(28%   0.02  265 / .7);/* subtelne obrysy 1px */
+
+  --ink:           oklch(97%   0.006 265);   /* główny tekst */
+  --ink-soft:      oklch(78%   0.012 265);   /* tekst drugorzędny */
+  --ink-faint:     oklch(60%   0.014 265);   /* podpisy, meta */
+
+  /* Akcent — DOMYŚLNIE żywy elektryczny cytryn/limonka na granacie.
+     To celowo NIE jest typowy "AI-fioletowy". Zmień 3 zmienne = nowa marka. */
+  --accent:        oklch(88% 0.19 118);      /* limonkowy neon */
+  --accent-ink:    oklch(20% 0.05 118);      /* tekst NA akcencie (ciemny) */
+  --accent-2:      oklch(70% 0.16 250);      /* wsparcie: elektryczny błękit */
+
+  /* Semantyczne */
+  --good:          oklch(80% 0.16 150);
+  --warn:          oklch(83% 0.15 85);
+  --bad:           oklch(68% 0.20 25);
+
+  /* Gradient-mesh / glow — używane przez effects.css */
+  --glow-1:        oklch(88% 0.19 118 / .55);
+  --glow-2:        oklch(70% 0.16 250 / .45);
+  --glow-3:        oklch(72% 0.20 330 / .30);
+
+  color-scheme: dark;
+
+  /* ---------------------------------------------------------------------------
+     2. TYPOGRAFIA
+     Font display kontra tekst = kontrast, który daje "redakcyjny" charakter.
+     Stack systemowy = zero zależności, działa offline (patrz PRINCIPLES.md,
+     sekcja o osadzaniu własnych fontów woff2 dla maks. oryginalności).
+  --------------------------------------------------------------------------- */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system,
+                  "Segoe UI", Roboto, sans-serif;
+  --font-text:    ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                  Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
+                  Menlo, Consolas, monospace;
+
+  /* Skala typograficzna — modularna (≈1.25, "major third"), płynna (clamp).
+     min = mobile, max = desktop. Nigdy nie ustawiaj px "z palca" w komponencie. */
+  --step--1: clamp(0.83rem, 0.80rem + 0.15vw, 0.92rem);
+  --step-0:  clamp(1.00rem, 0.95rem + 0.25vw, 1.13rem);   /* tekst bazowy */
+  --step-1:  clamp(1.25rem, 1.15rem + 0.50vw, 1.55rem);
+  --step-2:  clamp(1.56rem, 1.40rem + 0.90vw, 2.20rem);
+  --step-3:  clamp(1.95rem, 1.65rem + 1.60vw, 3.10rem);
+  --step-4:  clamp(2.44rem, 1.95rem + 2.70vw, 4.40rem);
+  --step-5:  clamp(3.05rem, 2.20rem + 4.60vw, 6.30rem);   /* hero */
+  --step-6:  clamp(3.60rem, 2.10rem + 7.80vw, 9.00rem);   /* mega display */
+
+  --leading-tight:  1.02;   /* wielkie nagłówki */
+  --leading-snug:   1.14;
+  --leading-normal: 1.6;    /* tekst */
+  --tracking-tight: -0.03em;
+  --tracking-wide:  0.14em; /* eyebrow / mono label */
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   700;
+
+  /* ---------------------------------------------------------------------------
+     3. PRZESTRZEŃ — skala 4px, nazwana. Rytm > przypadek.
+  --------------------------------------------------------------------------- */
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* Rytm sekcji — płynny odstęp pionowy między sekcjami */
+  --section-y: clamp(4rem, 3rem + 6vw, 9rem);
+
+  /* ---------------------------------------------------------------------------
+     4. UKŁAD
+  --------------------------------------------------------------------------- */
+  --measure:      68ch;     /* max. szerokość akapitu (czytelność) */
+  --container:    1200px;   /* domyślny kontener */
+  --container-wide: 1440px;
+  --gutter:       clamp(1.25rem, 0.5rem + 3.5vw, 3rem);
+
+  /* ---------------------------------------------------------------------------
+     5. ZAOKRĄGLENIA
+  --------------------------------------------------------------------------- */
+  --radius-sm: 0.5rem;
+  --radius:    0.875rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 999px;
+
+  /* ---------------------------------------------------------------------------
+     6. CIENIE — WIELOWARSTWOWE (klucz do premium głębi).
+     Pojedynczy box-shadow wygląda tanio. Warstwy = realistyczne światło.
+  --------------------------------------------------------------------------- */
+  --shadow-sm:
+    0 1px 2px oklch(0% 0 0 / .30),
+    0 1px 1px oklch(0% 0 0 / .20);
+  --shadow:
+    0 2px 4px oklch(0% 0 0 / .25),
+    0 8px 16px oklch(0% 0 0 / .30),
+    0 1px 0 oklch(100% 0 0 / .04) inset;
+  --shadow-lg:
+    0 4px 8px oklch(0% 0 0 / .25),
+    0 16px 32px oklch(0% 0 0 / .35),
+    0 32px 64px oklch(0% 0 0 / .30),
+    0 1px 0 oklch(100% 0 0 / .05) inset;
+  --shadow-glow:
+    0 0 0 1px var(--accent),
+    0 0 30px -6px var(--glow-1),
+    0 12px 40px -12px var(--glow-1);
+
+  /* ---------------------------------------------------------------------------
+     7. RUCH — spójne czasy i krzywe. "Designerski" ruch = szybki + miękki.
+  --------------------------------------------------------------------------- */
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);      /* wejścia */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* mikro-odbicie */
+  --dur-1: 0.15s;
+  --dur-2: 0.3s;
+  --dur-3: 0.55s;
+  --dur-4: 0.9s;
+
+  /* Warstwy z */
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+}
+
+/* =============================================================================
+   MOTYW JASNY — dodaj <body data-theme="light"> lub przełącznik.
+   ========================================================================== */
+:root[data-theme="light"],
+[data-theme="light"] {
+  --bg:           oklch(98.5% 0.004 265);
+  --bg-elev-1:    oklch(100%  0     0);
+  --bg-elev-2:    oklch(96.5% 0.004 265);
+  --surface-line: oklch(80%   0.01  265 / .8);
+
+  --ink:          oklch(20%   0.02  265);
+  --ink-soft:     oklch(40%   0.02  265);
+  --ink-faint:    oklch(55%   0.02  265);
+
+  --accent:       oklch(58% 0.18 260);      /* w jasnym: głębszy, by miał kontrast */
+  --accent-ink:   oklch(99% 0.01 260);
+  --accent-2:     oklch(62% 0.17 200);
+
+  --glow-1:       oklch(70% 0.18 260 / .28);
+  --glow-2:       oklch(65% 0.16 200 / .22);
+  --glow-3:       oklch(72% 0.20 330 / .16);
+
+  color-scheme: light;
+
+  --shadow-sm: 0 1px 2px oklch(30% 0.03 265 / .10), 0 1px 1px oklch(30% 0.03 265 / .06);
+  --shadow:    0 2px 4px oklch(30% 0.03 265 / .08), 0 10px 24px oklch(30% 0.03 265 / .10);
+  --shadow-lg: 0 4px 8px oklch(30% 0.03 265 / .08), 0 20px 48px oklch(30% 0.03 265 / .14),
+               0 40px 80px oklch(30% 0.03 265 / .10);
+}
+
+/* =============================================================================
+   ALTERNATYWNE PALETY AKCENTU — dodaj klasę na <body> by zmienić nastrój marki.
+   To pozwala z jednego systemu robić WIZUALNIE RÓŻNE strony (anty-generyczność).
+   ========================================================================== */
+.accent-ember  { --accent: oklch(72% 0.20 45);  --accent-ink: oklch(18% 0.05 45);  --accent-2: oklch(70% 0.17 25);  --glow-1: oklch(72% 0.20 45 / .55); }
+.accent-violet { --accent: oklch(72% 0.19 300); --accent-ink: oklch(98% 0.02 300); --accent-2: oklch(70% 0.16 260); --glow-1: oklch(72% 0.19 300 / .5); }
+.accent-cyan   { --accent: oklch(85% 0.15 195); --accent-ink: oklch(20% 0.05 220); --accent-2: oklch(70% 0.16 250); --glow-1: oklch(85% 0.15 195 / .5); }
+.accent-gold   { --accent: oklch(84% 0.14 90);  --accent-ink: oklch(20% 0.05 80);  --accent-2: oklch(72% 0.12 40);  --glow-1: oklch(84% 0.14 90 / .5); }
+.accent-rose   { --accent: oklch(75% 0.18 15);  --accent-ink: oklch(99% 0.02 15);  --accent-2: oklch(70% 0.16 330); --glow-1: oklch(75% 0.18 15 / .5); }
+
+</style>
+<style data-from="../../design-system/base.css">
+/* =============================================================================
+   base.css — Reset, typografia bazowa, układ i komponenty-prymitywy
+   Wymaga wcześniej wczytanego tokens.css.
+   ========================================================================== */
+
+/* ---- Reset (nowoczesny, minimalny) --------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+body {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--step-0);
+  line-height: var(--leading-normal);
+  font-weight: var(--weight-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "cv11";
+  overflow-x: hidden;
+}
+img, picture, svg, video, canvas { display: block; max-width: 100%; height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+a { color: inherit; text-decoration: none; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+::selection { background: var(--accent); color: var(--accent-ink); }
+hr { border: none; border-top: 1px solid var(--surface-line); }
+
+/* ---- Typografia bazowa --------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;      /* ładne łamanie nagłówków */
+}
+h1 { font-size: var(--step-5); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-2); }
+h4 { font-size: var(--step-1); line-height: var(--leading-snug); }
+p  { text-wrap: pretty; }
+p, li { max-width: var(--measure); }
+strong { font-weight: var(--weight-bold); }
+small { font-size: var(--step--1); }
+code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
+
+.display { font-size: var(--step-6); line-height: .95; letter-spacing: -0.04em; }
+.lead    { font-size: var(--step-1); color: var(--ink-soft); line-height: 1.5; font-weight: var(--weight-normal); }
+.muted   { color: var(--ink-soft); }
+.faint   { color: var(--ink-faint); }
+.mono    { font-family: var(--font-mono); }
+
+/* Eyebrow — mono etykieta nad nagłówkiem = sygnatura "designerska" */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.eyebrow::before {
+  content: ""; width: 1.75rem; height: 1px; background: var(--accent);
+  display: inline-block;
+}
+.eyebrow.no-rule::before { display: none; }
+
+/* Tekst z akcentem / gradientem — do pojedynczych słów w nagłówku */
+.hl { color: var(--accent); }
+.hl-grad {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ---- Układ --------------------------------------------------------------- */
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.container-wide { max-width: var(--container-wide); }
+.container-narrow { max-width: 760px; }
+.section { padding-block: var(--section-y); position: relative; }
+.stack > * + * { margin-top: var(--flow, var(--space-4)); }
+/* .col — pionowy flex (użyj, gdy dzieci to elementy inline, np. linki w stopce) */
+.col { display: flex; flex-direction: column; gap: var(--flow, var(--space-4)); align-items: flex-start; }
+.stack-lg > * + * { margin-top: var(--space-8); }
+.center-text { text-align: center; }
+.center-text p, .center-text .lead { margin-inline: auto; }
+
+.grid { display: grid; gap: var(--gap, var(--space-6)); }
+.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.cols-auto { grid-template-columns: repeat(auto-fit, minmax(var(--min, 260px), 1fr)); }
+.cluster { display: flex; flex-wrap: wrap; gap: var(--gap, var(--space-4)); align-items: center; }
+.between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+@media (max-width: 900px) {
+  .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+  .cols-3.keep-2, .cols-4.keep-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---- Przycisk ------------------------------------------------------------ */
+.btn {
+  --_bg: var(--bg-elev-2);
+  --_fg: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: 0.85em 1.4em;
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: var(--step-0);
+  line-height: 1;
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-full);
+  transition: transform var(--dur-1) var(--ease-spring),
+              box-shadow var(--dur-2) var(--ease-out),
+              background var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out);
+  will-change: transform;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn svg { width: 1.1em; height: 1.1em; }
+
+.btn-primary {
+  --_bg: var(--accent); --_fg: var(--accent-ink);
+  border-color: transparent;
+  box-shadow: 0 6px 20px -8px var(--glow-1);
+  font-weight: var(--weight-bold);
+}
+.btn-primary:hover { box-shadow: 0 10px 30px -8px var(--glow-1); }
+
+.btn-ghost { --_bg: transparent; }
+.btn-ghost:hover { --_bg: var(--bg-elev-1); border-color: var(--ink-faint); }
+
+.btn-lg { padding: 1.05em 1.8em; font-size: var(--step-1); }
+.btn-block { width: 100%; }
+
+/* Link ze strzałką — "read more" premium */
+.link-arrow { display: inline-flex; align-items: center; gap: .5em; color: var(--accent); font-weight: var(--weight-medium); }
+.link-arrow svg { transition: transform var(--dur-2) var(--ease-out); }
+.link-arrow:hover svg { transform: translateX(4px); }
+
+/* ---- Karta --------------------------------------------------------------- */
+.card {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  transition: transform var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out),
+              background var(--dur-2) var(--ease-out);
+}
+.card-hover:hover { transform: translateY(-4px); border-color: color-mix(in oklch, var(--accent) 45%, var(--surface-line)); background: var(--bg-elev-2); }
+
+/* ---- Znaczniki / pigułki ------------------------------------------------- */
+.badge {
+  display: inline-flex; align-items: center; gap: .5em;
+  padding: .4em .8em;
+  font-family: var(--font-mono); font-size: var(--step--1);
+  letter-spacing: .04em;
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
+  border-radius: var(--radius-full);
+}
+.badge-dot::before { content: ""; width: .5em; height: .5em; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+/* ---- Formularze (dla klikalnych demo) ------------------------------------ */
+.input {
+  width: 100%; padding: .85em 1em;
+  background: var(--bg-elev-1); color: var(--ink);
+  border: 1px solid var(--surface-line); border-radius: var(--radius);
+  transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+.input::placeholder { color: var(--ink-faint); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 25%, transparent); }
+.field-inline { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.field-inline .input { flex: 1 1 220px; }
+
+/* ---- Nawigacja ----------------------------------------------------------- */
+.nav {
+  position: sticky; top: 0; z-index: var(--z-nav);
+  padding-block: var(--space-4);
+  transition: background var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), padding var(--dur-2) var(--ease-out);
+  border-bottom: 1px solid transparent;
+}
+.nav.is-scrolled {
+  background: color-mix(in oklch, var(--bg) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--surface-line);
+  padding-block: var(--space-3);
+}
+.nav__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); }
+.nav__logo { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: var(--step-1); letter-spacing: var(--tracking-tight); }
+.nav__links { display: flex; gap: var(--space-8); }
+.nav__links a { color: var(--ink-soft); font-weight: var(--weight-medium); transition: color var(--dur-1) var(--ease-out); }
+.nav__links a:hover { color: var(--ink); }
+.nav__burger { display: none; flex-direction: column; gap: 5px; padding: var(--space-3); }
+.nav__burger span { width: 24px; height: 2px; background: var(--ink); transition: transform var(--dur-2) var(--ease-out), opacity var(--dur-1); }
+.nav.is-open .nav__burger span:first-child { transform: translateY(7px) rotate(45deg); }
+.nav.is-open .nav__burger span:last-child { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 860px) {
+  .nav .btn:not(.nav__burger) { display: none; }
+  .nav__burger { display: flex; }
+  .nav__links {
+    position: fixed; inset: 0; top: 0; z-index: -1;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-8); font-size: var(--step-2);
+    background: color-mix(in oklch, var(--bg) 96%, transparent);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    opacity: 0; pointer-events: none; transition: opacity var(--dur-2) var(--ease-out);
+  }
+  .nav.is-open .nav__links { opacity: 1; pointer-events: auto; }
+  .nav.is-open { background: transparent; }
+}
+
+/* ---- Hero (baseline; strona zwykle dodaje własny charakter) -------------- */
+.hero { padding-block: clamp(5rem, 4rem + 10vw, 12rem) var(--section-y); overflow: clip; }
+
+/* ---- Stopka -------------------------------------------------------------- */
+.footer { border-top: 1px solid var(--surface-line); padding-block: var(--space-16); margin-top: var(--section-y); }
+
+/* ---- Pomocnicze ---------------------------------------------------------- */
+.divider { height: 1px; background: var(--surface-line); border: 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.full-bleed { width: 100vw; margin-inline: calc(50% - 50vw); }
+.relative { position: relative; }
+.z1 { position: relative; z-index: 1; }
+
+</style>
+<style data-from="../../design-system/effects.css">
+/* =============================================================================
+   effects.css — Warstwa "premium": tło mesh, ziarno, poświata, ruch, reveal.
+   To jest to, co odróżnia stronę "z szablonu" od "zrobionej przez designera".
+   Używaj OSZCZĘDNIE — 1-2 mocne efekty na stronę, reszta to cisza. (PRINCIPLES)
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   1. GRADIENT MESH — miękkie, wielobarwne tło. Kładziesz jako ::before sekcji.
+   Klasa .mesh na kontenerze pozycjonowanym (position: relative).
+----------------------------------------------------------------------------- */
+.mesh { position: relative; isolation: isolate; }
+.mesh::before {
+  content: ""; position: absolute; inset: -20% -10%; z-index: -2;
+  background:
+    radial-gradient(40% 55% at 15% 20%, var(--glow-1), transparent 70%),
+    radial-gradient(45% 60% at 85% 15%, var(--glow-2), transparent 72%),
+    radial-gradient(50% 55% at 70% 90%, var(--glow-3), transparent 70%);
+  filter: blur(30px) saturate(125%);
+  opacity: .9;
+  animation: mesh-drift 22s var(--ease-in-out) infinite alternate;
+}
+@keyframes mesh-drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  50%  { transform: translate3d(2%, -2%, 0) scale(1.06); }
+  100% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
+}
+
+/* Aurora — wstęga światła u góry sekcji (subtelniejsza od mesh) */
+.aurora::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: conic-gradient(from 210deg at 50% -20%,
+    transparent, var(--glow-2), transparent 30%,
+    var(--glow-1), transparent 60%);
+  opacity: .5; filter: blur(40px);
+  mask: linear-gradient(to bottom, #000, transparent 65%);
+  -webkit-mask: linear-gradient(to bottom, #000, transparent 65%);
+}
+
+/* -----------------------------------------------------------------------------
+   2. ZIARNO / NOISE — nakładka filmowego szumu. Zabija "plastikowość" gradientów.
+   Klasa .grain na <body> lub sekcji. SVG jako data-URI = zero plików, offline.
+----------------------------------------------------------------------------- */
+.grain::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: .05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grain-fixed::after {
+  content: ""; position: fixed; inset: 0; z-index: var(--z-overlay); pointer-events: none;
+  opacity: .04; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -----------------------------------------------------------------------------
+   3. SIATKA / KRESKI — techniczne tło (dobre pod SaaS / dev / fintech).
+----------------------------------------------------------------------------- */
+.grid-lines { position: relative; }
+.grid-lines::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(var(--surface-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--surface-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  -webkit-mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  opacity: .5;
+}
+.dotgrid::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--surface-line) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+  mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  -webkit-mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  opacity: .6;
+}
+
+/* -----------------------------------------------------------------------------
+   4. POŚWIATA / SPOTLIGHT
+----------------------------------------------------------------------------- */
+.glow-orb { position: absolute; border-radius: 50%; filter: blur(60px); z-index: -1; pointer-events: none; opacity: .6; }
+.glow-orb.a { background: var(--glow-1); }
+.glow-orb.b { background: var(--glow-2); }
+
+/* Spotlight podążający za kursorem — wymaga motion.js (ustawia --mx/--my) */
+.spotlight { position: relative; }
+.spotlight::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%),
+              color-mix(in oklch, var(--accent) 22%, transparent), transparent 60%);
+  opacity: 0; transition: opacity var(--dur-3) var(--ease-out);
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* Obwódka gradientowa (conic) — premium ramka karty/CTA */
+.ring-grad { position: relative; }
+.ring-grad::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: conic-gradient(from 120deg, var(--accent), var(--accent-2), transparent 40%, var(--accent) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: .8; pointer-events: none;
+}
+
+/* -----------------------------------------------------------------------------
+   5. MARQUEE — przewijający się pas (logo, hasła). Pauza na hover.
+----------------------------------------------------------------------------- */
+.marquee { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee__track { display: flex; gap: var(--space-12); width: max-content; animation: marquee var(--speed, 32s) linear infinite; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* -----------------------------------------------------------------------------
+   6. REVEAL ON SCROLL — elementy wjeżdżają miękko. Wymaga motion.js.
+   Domyślnie ukryte; .is-in odsłania. Bez JS (lub reduced-motion) = widoczne.
+----------------------------------------------------------------------------- */
+[data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out); will-change: opacity, transform; }
+[data-reveal].is-in { opacity: 1; transform: none; }
+[data-reveal="left"]  { transform: translateX(-28px); }
+[data-reveal="right"] { transform: translateX(28px); }
+[data-reveal="scale"] { transform: scale(.94); }
+/* Kaskada: [data-reveal] wewnątrz [data-stagger] dostają opóźnienie z motion.js */
+.no-js [data-reveal], .reduce-motion [data-reveal] { opacity: 1; transform: none; }
+
+/* Animowany gradient tekstu (żywy, przesuwający się) */
+.text-flow {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2), var(--accent));
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: text-flow 6s linear infinite;
+}
+@keyframes text-flow { to { background-position: 200% center; } }
+
+/* Pływanie (subtelne unoszenie mockupów/obrazów hero) */
+.float { animation: float 7s var(--ease-in-out) infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+/* Tilt 3D karty — wymaga motion.js (ustawia --rx/--ry) */
+.tilt { transform: perspective(900px) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform var(--dur-2) var(--ease-out); transform-style: preserve-3d; }
+
+/* Podkreślenie "rysowane" pod linkiem nav */
+.underline-grow { position: relative; }
+.underline-grow::after { content: ""; position: absolute; left: 0; bottom: -3px; height: 2px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-2) var(--ease-out); }
+.underline-grow:hover::after { transform: scaleX(1); }
+
+/* Obraz z maską zaokrągloną + delikatna ramka światła */
+.media-frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--surface-line); box-shadow: var(--shadow-lg); position: relative; }
+.media-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 1px 0 oklch(100% 0 0 / .12) inset; pointer-events: none; }
+
+</style>
+<style>
+    /* ===== Charakter Omiko: chłodny granat + elektryczny cyjan-limonka ===== */
+    :root{
+      --accent: oklch(87% 0.17 175);            /* elektryczny akwamaryn */
+      --accent-ink: oklch(18% 0.04 190);
+      --accent-2: oklch(72% 0.15 255);          /* błękit */
+      --glow-1: oklch(87% 0.17 175 / .5);
+      --glow-2: oklch(72% 0.15 255 / .45);
+      --glow-3: oklch(80% 0.15 140 / .28);
+      --bg: oklch(13% 0.02 250);
+    }
+
+    /* Hero: asymetryczny split, treść + żywy mockup faktury */
+    .omk-hero{ padding-block: clamp(6rem,5rem+8vw,11rem) var(--section-y); overflow: clip; }
+    .omk-hero__grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:var(--space-16); align-items:center; }
+    .omk-hero__grid > *{ min-width:0; }   /* pozwól kolumnom zwężać się poniżej min-content (fix mobile) */
+    @media (max-width: 980px){ .omk-hero__grid{ grid-template-columns:1fr; gap:var(--space-12); } }
+    /* Odważny, ale zawijający się nagłówek — nie przekracza szerokości ekranu */
+    .omk-hero h1{ font-size: clamp(2.6rem, 1.4rem + 6vw, 5.6rem); line-height:.98; overflow-wrap:break-word; }
+    .omk-hero__stats{ display:flex; gap:var(--space-8); flex-wrap:wrap; margin-top:var(--space-4); }
+    .omk-hero__stats b{ font-family:var(--font-display); font-size:var(--step-2); display:block; }
+
+    /* Mockup faktury (czysty HTML/CSS — wygląda jak realny UI) */
+    .invoice{ background:var(--bg-elev-1); border:1px solid var(--surface-line); border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-lg); overflow:hidden; }
+    .invoice__bar{ display:flex; align-items:center; gap:.5rem; padding:.9rem 1.1rem; border-bottom:1px solid var(--surface-line);
+      background:var(--bg-elev-2); }
+    .invoice__dot{ width:.7rem; height:.7rem; border-radius:50%; background:var(--ink-faint); opacity:.5; }
+    .invoice__body{ padding:var(--space-8); }
+    .invoice__row{ display:flex; justify-content:space-between; align-items:center; gap:var(--space-6); padding:.7rem 0; border-bottom:1px dashed var(--surface-line); }
+    .invoice__row:last-child{ border-bottom:0; }
+    .invoice__row > span:first-child{ min-width:0; }
+    .invoice .mono, .invoice__total{ white-space:nowrap; }   /* kwoty nigdy się nie łamią */
+    .invoice__total{ font-family:var(--font-display); font-size:var(--step-3); }
+    .invoice__stamp{ display:inline-flex; align-items:center; gap:.5rem; padding:.35rem .7rem; border-radius:var(--radius-full); white-space:nowrap; flex-shrink:0;
+      background:color-mix(in oklch,var(--good) 15%, transparent); color:var(--good); font-family:var(--font-mono); font-size:var(--step--1); }
+    .invoice__stamp::before{ content:""; width:.5rem; height:.5rem; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
+
+    /* Sekcja "jak działa" — połączona linią */
+    .steps{ counter-reset: s; display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-8); }
+    @media (max-width: 900px){ .steps{ grid-template-columns:1fr; } }
+    .step{ position:relative; padding-top:var(--space-8); }
+    .step::before{ counter-increment:s; content:"0" counter(s); font-family:var(--font-mono); font-size:var(--step-2);
+      color:var(--accent); display:block; margin-bottom:var(--space-3); }
+
+    /* Pricing */
+    .price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-6); align-items:start; }
+    @media (max-width: 900px){ .price-grid{ grid-template-columns:1fr; } }
+    .price{ display:flex; flex-direction:column; gap:var(--space-4); }
+    .price--featured{ background:var(--bg-elev-2); }
+    .price__amount{ font-family:var(--font-display); font-size:var(--step-4); line-height:1; }
+    .price ul{ list-style:none; padding:0; display:grid; gap:var(--space-3); }
+    .price li{ display:flex; gap:.6rem; color:var(--ink-soft); }
+    .price li::before{ content:"✓"; color:var(--accent); font-weight:700; }
+
+    .toggle{ display:inline-flex; gap:.25rem; padding:.25rem; border:1px solid var(--surface-line); border-radius:var(--radius-full); }
+    .toggle button{ padding:.5rem 1rem; border-radius:var(--radius-full); color:var(--ink-soft); font-family:var(--font-mono); font-size:var(--step--1); }
+    .toggle button[aria-selected="true"]{ background:var(--accent); color:var(--accent-ink); }
+
+    .big-num{ font-family:var(--font-display); font-size:var(--step-5); line-height:1; color:var(--accent); white-space:nowrap; }
+  </style>
+ lub przełącznik.
+   ========================================================================== */
+:root[data-theme="light"],
+[data-theme="light"] {
+  --bg:           oklch(98.5% 0.004 265);
+  --bg-elev-1:    oklch(100%  0     0);
+  --bg-elev-2:    oklch(96.5% 0.004 265);
+  --surface-line: oklch(80%   0.01  265 / .8);
+
+  --ink:          oklch(20%   0.02  265);
+  --ink-soft:     oklch(40%   0.02  265);
+  --ink-faint:    oklch(55%   0.02  265);
+
+  --accent:       oklch(58% 0.18 260);      /* w jasnym: głębszy, by miał kontrast */
+  --accent-ink:   oklch(99% 0.01 260);
+  --accent-2:     oklch(62% 0.17 200);
+
+  --glow-1:       oklch(70% 0.18 260 / .28);
+  --glow-2:       oklch(65% 0.16 200 / .22);
+  --glow-3:       oklch(72% 0.20 330 / .16);
+
+  color-scheme: light;
+
+  --shadow-sm: 0 1px 2px oklch(30% 0.03 265 / .10), 0 1px 1px oklch(30% 0.03 265 / .06);
+  --shadow:    0 2px 4px oklch(30% 0.03 265 / .08), 0 10px 24px oklch(30% 0.03 265 / .10);
+  --shadow-lg: 0 4px 8px oklch(30% 0.03 265 / .08), 0 20px 48px oklch(30% 0.03 265 / .14),
+               0 40px 80px oklch(30% 0.03 265 / .10);
+}
+
+/* =============================================================================
+   ALTERNATYWNE PALETY AKCENTU — dodaj klasę na <body> by zmienić nastrój marki.
+   To pozwala z jednego systemu robić WIZUALNIE RÓŻNE strony (anty-generyczność).
+   ========================================================================== */
+.accent-ember  { --accent: oklch(72% 0.20 45);  --accent-ink: oklch(18% 0.05 45);  --accent-2: oklch(70% 0.17 25);  --glow-1: oklch(72% 0.20 45 / .55); }
+.accent-violet { --accent: oklch(72% 0.19 300); --accent-ink: oklch(98% 0.02 300); --accent-2: oklch(70% 0.16 260); --glow-1: oklch(72% 0.19 300 / .5); }
+.accent-cyan   { --accent: oklch(85% 0.15 195); --accent-ink: oklch(20% 0.05 220); --accent-2: oklch(70% 0.16 250); --glow-1: oklch(85% 0.15 195 / .5); }
+.accent-gold   { --accent: oklch(84% 0.14 90);  --accent-ink: oklch(20% 0.05 80);  --accent-2: oklch(72% 0.12 40);  --glow-1: oklch(84% 0.14 90 / .5); }
+.accent-rose   { --accent: oklch(75% 0.18 15);  --accent-ink: oklch(99% 0.02 15);  --accent-2: oklch(70% 0.16 330); --glow-1: oklch(75% 0.18 15 / .5); }
+
+</style>
+  <style data-from="../../design-system/base.css">
+/* =============================================================================
+   base.css — Reset, typografia bazowa, układ i komponenty-prymitywy
+   Wymaga wcześniej wczytanego tokens.css.
+   ========================================================================== */
+
+/* ---- Reset (nowoczesny, minimalny) --------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+body {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--step-0);
+  line-height: var(--leading-normal);
+  font-weight: var(--weight-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "cv11";
+  overflow-x: hidden;
+}
+img, picture, svg, video, canvas { display: block; max-width: 100%; height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+a { color: inherit; text-decoration: none; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+::selection { background: var(--accent); color: var(--accent-ink); }
+hr { border: none; border-top: 1px solid var(--surface-line); }
+
+/* ---- Typografia bazowa --------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;      /* ładne łamanie nagłówków */
+}
+h1 { font-size: var(--step-5); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-2); }
+h4 { font-size: var(--step-1); line-height: var(--leading-snug); }
+p  { text-wrap: pretty; }
+p, li { max-width: var(--measure); }
+strong { font-weight: var(--weight-bold); }
+small { font-size: var(--step--1); }
+code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
+
+.display { font-size: var(--step-6); line-height: .95; letter-spacing: -0.04em; }
+.lead    { font-size: var(--step-1); color: var(--ink-soft); line-height: 1.5; font-weight: var(--weight-normal); }
+.muted   { color: var(--ink-soft); }
+.faint   { color: var(--ink-faint); }
+.mono    { font-family: var(--font-mono); }
+
+/* Eyebrow — mono etykieta nad nagłówkiem = sygnatura "designerska" */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.eyebrow::before {
+  content: ""; width: 1.75rem; height: 1px; background: var(--accent);
+  display: inline-block;
+}
+.eyebrow.no-rule::before { display: none; }
+
+/* Tekst z akcentem / gradientem — do pojedynczych słów w nagłówku */
+.hl { color: var(--accent); }
+.hl-grad {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ---- Układ --------------------------------------------------------------- */
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.container-wide { max-width: var(--container-wide); }
+.container-narrow { max-width: 760px; }
+.section { padding-block: var(--section-y); position: relative; }
+.stack > * + * { margin-top: var(--flow, var(--space-4)); }
+/* .col — pionowy flex (użyj, gdy dzieci to elementy inline, np. linki w stopce) */
+.col { display: flex; flex-direction: column; gap: var(--flow, var(--space-4)); align-items: flex-start; }
+.stack-lg > * + * { margin-top: var(--space-8); }
+.center-text { text-align: center; }
+.center-text p, .center-text .lead { margin-inline: auto; }
+
+.grid { display: grid; gap: var(--gap, var(--space-6)); }
+.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.cols-auto { grid-template-columns: repeat(auto-fit, minmax(var(--min, 260px), 1fr)); }
+.cluster { display: flex; flex-wrap: wrap; gap: var(--gap, var(--space-4)); align-items: center; }
+.between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+@media (max-width: 900px) {
+  .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+  .cols-3.keep-2, .cols-4.keep-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---- Przycisk ------------------------------------------------------------ */
+.btn {
+  --_bg: var(--bg-elev-2);
+  --_fg: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: 0.85em 1.4em;
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: var(--step-0);
+  line-height: 1;
+  color: var(--_fg);
+  background: var(--_bg);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-full);
+  transition: transform var(--dur-1) var(--ease-spring),
+              box-shadow var(--dur-2) var(--ease-out),
+              background var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out);
+  will-change: transform;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn svg { width: 1.1em; height: 1.1em; }
+
+.btn-primary {
+  --_bg: var(--accent); --_fg: var(--accent-ink);
+  border-color: transparent;
+  box-shadow: 0 6px 20px -8px var(--glow-1);
+  font-weight: var(--weight-bold);
+}
+.btn-primary:hover { box-shadow: 0 10px 30px -8px var(--glow-1); }
+
+.btn-ghost { --_bg: transparent; }
+.btn-ghost:hover { --_bg: var(--bg-elev-1); border-color: var(--ink-faint); }
+
+.btn-lg { padding: 1.05em 1.8em; font-size: var(--step-1); }
+.btn-block { width: 100%; }
+
+/* Link ze strzałką — "read more" premium */
+.link-arrow { display: inline-flex; align-items: center; gap: .5em; color: var(--accent); font-weight: var(--weight-medium); }
+.link-arrow svg { transition: transform var(--dur-2) var(--ease-out); }
+.link-arrow:hover svg { transform: translateX(4px); }
+
+/* ---- Karta --------------------------------------------------------------- */
+.card {
+  background: var(--bg-elev-1);
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  transition: transform var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out),
+              background var(--dur-2) var(--ease-out);
+}
+.card-hover:hover { transform: translateY(-4px); border-color: color-mix(in oklch, var(--accent) 45%, var(--surface-line)); background: var(--bg-elev-2); }
+
+/* ---- Znaczniki / pigułki ------------------------------------------------- */
+.badge {
+  display: inline-flex; align-items: center; gap: .5em;
+  padding: .4em .8em;
+  font-family: var(--font-mono); font-size: var(--step--1);
+  letter-spacing: .04em;
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
+  border-radius: var(--radius-full);
+}
+.badge-dot::before { content: ""; width: .5em; height: .5em; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+/* ---- Formularze (dla klikalnych demo) ------------------------------------ */
+.input {
+  width: 100%; padding: .85em 1em;
+  background: var(--bg-elev-1); color: var(--ink);
+  border: 1px solid var(--surface-line); border-radius: var(--radius);
+  transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+.input::placeholder { color: var(--ink-faint); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 25%, transparent); }
+.field-inline { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.field-inline .input { flex: 1 1 220px; }
+
+/* ---- Nawigacja ----------------------------------------------------------- */
+.nav {
+  position: sticky; top: 0; z-index: var(--z-nav);
+  padding-block: var(--space-4);
+  transition: background var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), padding var(--dur-2) var(--ease-out);
+  border-bottom: 1px solid transparent;
+}
+.nav.is-scrolled {
+  background: color-mix(in oklch, var(--bg) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--surface-line);
+  padding-block: var(--space-3);
+}
+.nav__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); }
+.nav__logo { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: var(--step-1); letter-spacing: var(--tracking-tight); }
+.nav__links { display: flex; gap: var(--space-8); }
+.nav__links a { color: var(--ink-soft); font-weight: var(--weight-medium); transition: color var(--dur-1) var(--ease-out); }
+.nav__links a:hover { color: var(--ink); }
+.nav__burger { display: none; flex-direction: column; gap: 5px; padding: var(--space-3); }
+.nav__burger span { width: 24px; height: 2px; background: var(--ink); transition: transform var(--dur-2) var(--ease-out), opacity var(--dur-1); }
+.nav.is-open .nav__burger span:first-child { transform: translateY(7px) rotate(45deg); }
+.nav.is-open .nav__burger span:last-child { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 860px) {
+  .nav .btn:not(.nav__burger) { display: none; }
+  .nav__burger { display: flex; }
+  .nav__links {
+    position: fixed; inset: 0; top: 0; z-index: -1;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-8); font-size: var(--step-2);
+    background: color-mix(in oklch, var(--bg) 96%, transparent);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    opacity: 0; pointer-events: none; transition: opacity var(--dur-2) var(--ease-out);
+  }
+  .nav.is-open .nav__links { opacity: 1; pointer-events: auto; }
+  .nav.is-open { background: transparent; }
+}
+
+/* ---- Hero (baseline; strona zwykle dodaje własny charakter) -------------- */
+.hero { padding-block: clamp(5rem, 4rem + 10vw, 12rem) var(--section-y); overflow: clip; }
+
+/* ---- Stopka -------------------------------------------------------------- */
+.footer { border-top: 1px solid var(--surface-line); padding-block: var(--space-16); margin-top: var(--section-y); }
+
+/* ---- Pomocnicze ---------------------------------------------------------- */
+.divider { height: 1px; background: var(--surface-line); border: 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.full-bleed { width: 100vw; margin-inline: calc(50% - 50vw); }
+.relative { position: relative; }
+.z1 { position: relative; z-index: 1; }
+
+</style>
+  <style data-from="../../design-system/effects.css">
+/* =============================================================================
+   effects.css — Warstwa "premium": tło mesh, ziarno, poświata, ruch, reveal.
+   To jest to, co odróżnia stronę "z szablonu" od "zrobionej przez designera".
+   Używaj OSZCZĘDNIE — 1-2 mocne efekty na stronę, reszta to cisza. (PRINCIPLES)
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   1. GRADIENT MESH — miękkie, wielobarwne tło. Kładziesz jako ::before sekcji.
+   Klasa .mesh na kontenerze pozycjonowanym (position: relative).
+----------------------------------------------------------------------------- */
+.mesh { position: relative; isolation: isolate; }
+.mesh::before {
+  content: ""; position: absolute; inset: -20% -10%; z-index: -2;
+  background:
+    radial-gradient(40% 55% at 15% 20%, var(--glow-1), transparent 70%),
+    radial-gradient(45% 60% at 85% 15%, var(--glow-2), transparent 72%),
+    radial-gradient(50% 55% at 70% 90%, var(--glow-3), transparent 70%);
+  filter: blur(30px) saturate(125%);
+  opacity: .9;
+  animation: mesh-drift 22s var(--ease-in-out) infinite alternate;
+}
+@keyframes mesh-drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  50%  { transform: translate3d(2%, -2%, 0) scale(1.06); }
+  100% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
+}
+
+/* Aurora — wstęga światła u góry sekcji (subtelniejsza od mesh) */
+.aurora::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: conic-gradient(from 210deg at 50% -20%,
+    transparent, var(--glow-2), transparent 30%,
+    var(--glow-1), transparent 60%);
+  opacity: .5; filter: blur(40px);
+  mask: linear-gradient(to bottom, #000, transparent 65%);
+  -webkit-mask: linear-gradient(to bottom, #000, transparent 65%);
+}
+
+/* -----------------------------------------------------------------------------
+   2. ZIARNO / NOISE — nakładka filmowego szumu. Zabija "plastikowość" gradientów.
+   Klasa .grain na <body> lub sekcji. SVG jako data-URI = zero plików, offline.
+----------------------------------------------------------------------------- */
+.grain::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: .05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grain-fixed::after {
+  content: ""; position: fixed; inset: 0; z-index: var(--z-overlay); pointer-events: none;
+  opacity: .04; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -----------------------------------------------------------------------------
+   3. SIATKA / KRESKI — techniczne tło (dobre pod SaaS / dev / fintech).
+----------------------------------------------------------------------------- */
+.grid-lines { position: relative; }
+.grid-lines::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(var(--surface-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--surface-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  -webkit-mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  opacity: .5;
+}
+.dotgrid::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--surface-line) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+  mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  -webkit-mask: radial-gradient(70% 60% at 50% 40%, #000, transparent 90%);
+  opacity: .6;
+}
+
+/* -----------------------------------------------------------------------------
+   4. POŚWIATA / SPOTLIGHT
+----------------------------------------------------------------------------- */
+.glow-orb { position: absolute; border-radius: 50%; filter: blur(60px); z-index: -1; pointer-events: none; opacity: .6; }
+.glow-orb.a { background: var(--glow-1); }
+.glow-orb.b { background: var(--glow-2); }
+
+/* Spotlight podążający za kursorem — wymaga motion.js (ustawia --mx/--my) */
+.spotlight { position: relative; }
+.spotlight::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%),
+              color-mix(in oklch, var(--accent) 22%, transparent), transparent 60%);
+  opacity: 0; transition: opacity var(--dur-3) var(--ease-out);
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* Obwódka gradientowa (conic) — premium ramka karty/CTA */
+.ring-grad { position: relative; }
+.ring-grad::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: conic-gradient(from 120deg, var(--accent), var(--accent-2), transparent 40%, var(--accent) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: .8; pointer-events: none;
+}
+
+/* -----------------------------------------------------------------------------
+   5. MARQUEE — przewijający się pas (logo, hasła). Pauza na hover.
+----------------------------------------------------------------------------- */
+.marquee { overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee__track { display: flex; gap: var(--space-12); width: max-content; animation: marquee var(--speed, 32s) linear infinite; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* -----------------------------------------------------------------------------
+   6. REVEAL ON SCROLL — elementy wjeżdżają miękko. Wymaga motion.js.
+   Domyślnie ukryte; .is-in odsłania. Bez JS (lub reduced-motion) = widoczne.
+----------------------------------------------------------------------------- */
+[data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out); will-change: opacity, transform; }
+[data-reveal].is-in { opacity: 1; transform: none; }
+[data-reveal="left"]  { transform: translateX(-28px); }
+[data-reveal="right"] { transform: translateX(28px); }
+[data-reveal="scale"] { transform: scale(.94); }
+/* Kaskada: [data-reveal] wewnątrz [data-stagger] dostają opóźnienie z motion.js */
+.no-js [data-reveal], .reduce-motion [data-reveal] { opacity: 1; transform: none; }
+
+/* Animowany gradient tekstu (żywy, przesuwający się) */
+.text-flow {
+  background: linear-gradient(100deg, var(--accent), var(--accent-2), var(--accent));
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: text-flow 6s linear infinite;
+}
+@keyframes text-flow { to { background-position: 200% center; } }
+
+/* Pływanie (subtelne unoszenie mockupów/obrazów hero) */
+.float { animation: float 7s var(--ease-in-out) infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+/* Tilt 3D karty — wymaga motion.js (ustawia --rx/--ry) */
+.tilt { transform: perspective(900px) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform var(--dur-2) var(--ease-out); transform-style: preserve-3d; }
+
+/* Podkreślenie "rysowane" pod linkiem nav */
+.underline-grow { position: relative; }
+.underline-grow::after { content: ""; position: absolute; left: 0; bottom: -3px; height: 2px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-2) var(--ease-out); }
+.underline-grow:hover::after { transform: scaleX(1); }
+
+/* Obraz z maską zaokrągloną + delikatna ramka światła */
+.media-frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--surface-line); box-shadow: var(--shadow-lg); position: relative; }
+.media-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 1px 0 oklch(100% 0 0 / .12) inset; pointer-events: none; }
+
+</style>
+
+  <style>
+    /* ===== Charakter Omiko: chłodny granat + elektryczny cyjan-limonka ===== */
+    :root{
+      --accent: oklch(87% 0.17 175);            /* elektryczny akwamaryn */
+      --accent-ink: oklch(18% 0.04 190);
+      --accent-2: oklch(72% 0.15 255);          /* błękit */
+      --glow-1: oklch(87% 0.17 175 / .5);
+      --glow-2: oklch(72% 0.15 255 / .45);
+      --glow-3: oklch(80% 0.15 140 / .28);
+      --bg: oklch(13% 0.02 250);
+    }
+
+    /* Hero: asymetryczny split, treść + żywy mockup faktury */
+    .omk-hero{ padding-block: clamp(6rem,5rem+8vw,11rem) var(--section-y); overflow: clip; }
+    .omk-hero__grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:var(--space-16); align-items:center; }
+    .omk-hero__grid > *{ min-width:0; }   /* pozwól kolumnom zwężać się poniżej min-content (fix mobile) */
+    @media (max-width: 980px){ .omk-hero__grid{ grid-template-columns:1fr; gap:var(--space-12); } }
+    /* Odważny, ale zawijający się nagłówek — nie przekracza szerokości ekranu */
+    .omk-hero h1{ font-size: clamp(2.6rem, 1.4rem + 6vw, 5.6rem); line-height:.98; overflow-wrap:break-word; }
+    .omk-hero__stats{ display:flex; gap:var(--space-8); flex-wrap:wrap; margin-top:var(--space-4); }
+    .omk-hero__stats b{ font-family:var(--font-display); font-size:var(--step-2); display:block; }
+
+    /* Mockup faktury (czysty HTML/CSS — wygląda jak realny UI) */
+    .invoice{ background:var(--bg-elev-1); border:1px solid var(--surface-line); border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-lg); overflow:hidden; }
+    .invoice__bar{ display:flex; align-items:center; gap:.5rem; padding:.9rem 1.1rem; border-bottom:1px solid var(--surface-line);
+      background:var(--bg-elev-2); }
+    .invoice__dot{ width:.7rem; height:.7rem; border-radius:50%; background:var(--ink-faint); opacity:.5; }
+    .invoice__body{ padding:var(--space-8); }
+    .invoice__row{ display:flex; justify-content:space-between; align-items:center; gap:var(--space-6); padding:.7rem 0; border-bottom:1px dashed var(--surface-line); }
+    .invoice__row:last-child{ border-bottom:0; }
+    .invoice__row > span:first-child{ min-width:0; }
+    .invoice .mono, .invoice__total{ white-space:nowrap; }   /* kwoty nigdy się nie łamią */
+    .invoice__total{ font-family:var(--font-display); font-size:var(--step-3); }
+    .invoice__stamp{ display:inline-flex; align-items:center; gap:.5rem; padding:.35rem .7rem; border-radius:var(--radius-full); white-space:nowrap; flex-shrink:0;
+      background:color-mix(in oklch,var(--good) 15%, transparent); color:var(--good); font-family:var(--font-mono); font-size:var(--step--1); }
+    .invoice__stamp::before{ content:""; width:.5rem; height:.5rem; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
+
+    /* Sekcja "jak działa" — połączona linią */
+    .steps{ counter-reset: s; display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-8); }
+    @media (max-width: 900px){ .steps{ grid-template-columns:1fr; } }
+    .step{ position:relative; padding-top:var(--space-8); }
+    .step::before{ counter-increment:s; content:"0" counter(s); font-family:var(--font-mono); font-size:var(--step-2);
+      color:var(--accent); display:block; margin-bottom:var(--space-3); }
+
+    /* Pricing */
+    .price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-6); align-items:start; }
+    @media (max-width: 900px){ .price-grid{ grid-template-columns:1fr; } }
+    .price{ display:flex; flex-direction:column; gap:var(--space-4); }
+    .price--featured{ background:var(--bg-elev-2); }
+    .price__amount{ font-family:var(--font-display); font-size:var(--step-4); line-height:1; }
+    .price ul{ list-style:none; padding:0; display:grid; gap:var(--space-3); }
+    .price li{ display:flex; gap:.6rem; color:var(--ink-soft); }
+    .price li::before{ content:"✓"; color:var(--accent); font-weight:700; }
+
+    .toggle{ display:inline-flex; gap:.25rem; padding:.25rem; border:1px solid var(--surface-line); border-radius:var(--radius-full); }
+    .toggle button{ padding:.5rem 1rem; border-radius:var(--radius-full); color:var(--ink-soft); font-family:var(--font-mono); font-size:var(--step--1); }
+    .toggle button[aria-selected="true"]{ background:var(--accent); color:var(--accent-ink); }
+
+    .big-num{ font-family:var(--font-display); font-size:var(--step-5); line-height:1; color:var(--accent); white-space:nowrap; }
+  </style>
+</head>
+<body class="grain-fixed">
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav" data-nav>
+    <div class="container container-wide nav__inner">
+      <a class="nav__logo" href="#top">omiko<span class="hl">.</span></a>
+      <nav class="nav__links" aria-label="Główna">
+        <a class="underline-grow" href="#funkcje">Funkcje</a>
+        <a class="underline-grow" href="#jak">Jak to działa</a>
+        <a class="underline-grow" href="#cennik">Cennik</a>
+        <a class="underline-grow" href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-primary" href="#cennik">Wypróbuj za darmo</a>
+      <button class="nav__burger" data-nav-toggle aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="omk-hero mesh aurora" data-shot="hero">
+      <div class="container container-wide">
+        <div class="omk-hero__grid">
+          <div class="stack" data-stagger="90">
+            <span class="badge badge-dot" data-reveal>Zintegrowane z KSeF</span>
+            <h1 data-reveal>Faktury bez tarcia. <span class="text-flow">Od wystawienia do zapłaty.</span></h1>
+            <p class="lead" data-reveal>Omiko automatyzuje fakturowanie, e-faktury w KSeF i przypomnienia o płatnościach — żebyś odzyskał godziny każdego tygodnia i pieniądze szybciej.</p>
+            <div class="cluster" data-reveal>
+              <a class="btn btn-primary btn-lg" href="#cennik">Zacznij za darmo</a>
+              <a class="btn btn-ghost btn-lg" href="#jak">Zobacz jak działa
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+            <div class="omk-hero__stats" data-reveal>
+              <div><b class="hl"><span data-count="12" data-suffix=" s">0</span></b><span class="faint mono">na wystawienie faktury</span></div>
+              <div><b class="hl"><span data-count="30" data-suffix="%">0</span></b><span class="faint mono">szybsze płatności</span></div>
+              <div><b class="hl"><span data-count="100" data-suffix="%">0</span></b><span class="faint mono">zgodność z KSeF</span></div>
+            </div>
+          </div>
+
+          <!-- Mockup faktury -->
+          <div class="invoice float tilt" data-tilt="6" data-reveal="scale">
+            <div class="invoice__bar">
+              <span class="invoice__dot"></span><span class="invoice__dot"></span><span class="invoice__dot"></span>
+              <span class="mono faint" style="margin-left:auto;font-size:var(--step--1)">FV 2026/07/128</span>
+            </div>
+            <div class="invoice__body stack" style="--flow:var(--space-4)">
+              <div class="between">
+                <div><div class="mono faint" style="font-size:var(--step--1)">Odbiorca</div><strong>Nordic Studio sp. z o.o.</strong></div>
+                <span class="invoice__stamp">wysłano do KSeF</span>
+              </div>
+              <hr class="divider" />
+              <div class="invoice__row"><span class="muted">Wdrożenie systemu</span><span class="mono">8 400,00 zł</span></div>
+              <div class="invoice__row"><span class="muted">Abonament (12 mies.)</span><span class="mono">3 600,00 zł</span></div>
+              <div class="invoice__row"><span class="muted">VAT 23%</span><span class="mono">2 760,00 zł</span></div>
+              <div class="between" style="padding-top:var(--space-3)">
+                <span class="mono faint">Do zapłaty</span>
+                <span class="invoice__total hl">14 760,00 zł</span>
+              </div>
+              <a class="btn btn-primary btn-block" href="#cennik">Opłać teraz</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ZAUFANIE (marquee) ===================== -->
+    <section class="section" style="padding-block:var(--space-12)" data-shot="zaufanie">
+      <div class="container center-text stack" style="--flow:var(--space-8)">
+        <p class="eyebrow no-rule" style="justify-content:center" data-reveal>Zaufały nam zespoły, które nie lubią tracić czasu</p>
+        <div class="marquee" data-reveal>
+          <div class="marquee__track">
+            <span class="mono faint" style="font-size:var(--step-2)">NORDIC</span>
+            <span class="mono faint" style="font-size:var(--step-2)">VOLTA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">KAPPA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">ORBIT</span>
+            <span class="mono faint" style="font-size:var(--step-2)">SENSO</span>
+            <span class="mono faint" style="font-size:var(--step-2)">MERIDIAN</span>
+            <span class="mono faint" style="font-size:var(--step-2)">NORDIC</span>
+            <span class="mono faint" style="font-size:var(--step-2)">VOLTA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">KAPPA</span>
+            <span class="mono faint" style="font-size:var(--step-2)">ORBIT</span>
+            <span class="mono faint" style="font-size:var(--step-2)">SENSO</span>
+            <span class="mono faint" style="font-size:var(--step-2)">MERIDIAN</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FUNKCJE (bento) ===================== -->
+    <section class="section" id="funkcje" data-shot="funkcje">
+      <div class="container container-wide">
+        <div class="stack" style="margin-bottom:var(--space-16);max-width:60ch">
+          <span class="eyebrow" data-reveal>Funkcje</span>
+          <h2 data-reveal>Wszystko, czego potrzebuje Twój obieg faktur — w jednym miejscu</h2>
+        </div>
+        <div class="grid" style="grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(190px,auto)" data-stagger="70">
+          <article class="card card-hover spotlight" style="grid-column:span 2" data-reveal>
+            <span class="badge" style="margin-bottom:var(--space-4)">KSeF</span>
+            <h3>E-faktury zgodne z KSeF, automatycznie</h3>
+            <p class="muted">Wystawiasz w Omiko — my zajmujemy się wysyłką, numeracją i statusami w Krajowym Systemie e-Faktur. Zero ręcznego przepisywania.</p>
+          </article>
+          <article class="card card-hover" data-reveal>
+            <h3>Płatności online</h3>
+            <p class="muted">Link do zapłaty w każdej fakturze. Klient płaci jednym kliknięciem.</p>
+          </article>
+          <article class="card card-hover" data-reveal>
+            <h3>Przypomnienia</h3>
+            <p class="muted">Automatyczne monity o terminach — grzecznie, ale skutecznie.</p>
+          </article>
+          <article class="card card-hover spotlight" style="grid-column:span 2" data-reveal>
+            <h3>Raporty i rozliczenia w czasie rzeczywistym</h3>
+            <p class="muted">Widzisz przepływy, zaległości i prognozy gotówki. Eksport dla księgowości jednym kliknięciem.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== JAK TO DZIAŁA ===================== -->
+    <section class="section grid-lines" id="jak" data-shot="jak">
+      <div class="container">
+        <div class="stack center-text" style="margin-bottom:var(--space-16)">
+          <span class="eyebrow" style="justify-content:center" data-reveal>Jak to działa</span>
+          <h2 data-reveal>Trzy kroki do faktury opłaconej na czas</h2>
+        </div>
+        <div class="steps" data-stagger="120">
+          <div class="step stack" data-reveal><h3>Wystaw</h3><p class="muted">Wybierz klienta, dodaj pozycje. Omiko podpowiada dane i liczy VAT.</p></div>
+          <div class="step stack" data-reveal><h3>Wyślij</h3><p class="muted">Faktura trafia do KSeF i do klienta z linkiem do płatności — automatycznie.</p></div>
+          <div class="step stack" data-reveal><h3>Rozlicz</h3><p class="muted">Śledzisz status, dostajesz powiadomienie o zapłacie, księgowość ma komplet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATYSTYKI ===================== -->
+    <section class="section" data-shot="statystyki">
+      <div class="container">
+        <div class="card mesh ring-grad" style="padding:var(--space-20)">
+          <div class="grid cols-4 keep-2 center-text" data-stagger="90">
+            <div data-reveal><div class="big-num"><span data-count="12" data-suffix=" s">0</span></div><p class="faint mono">średni czas faktury</p></div>
+            <div data-reveal><div class="big-num"><span data-count="30" data-suffix="%">0</span></div><p class="faint mono">szybsze płatności</p></div>
+            <div data-reveal><div class="big-num"><span data-count="8" data-suffix=" h">0</span></div><p class="faint mono">oszczędzone tygodniowo</p></div>
+            <div data-reveal><div class="big-num"><span data-count="99.9" data-suffix="%">0</span></div><p class="faint mono">dostępność systemu</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CENNIK ===================== -->
+    <section class="section" id="cennik" data-shot="cennik">
+      <div class="container">
+        <div class="stack center-text" style="margin-bottom:var(--space-12)">
+          <span class="eyebrow" style="justify-content:center" data-reveal>Cennik</span>
+          <h2 data-reveal>Prosto. Bez ukrytych kosztów.</h2>
+          <div style="margin-inline:auto" data-reveal>
+            <div class="toggle" data-tabs role="tablist" aria-label="Okres rozliczenia">
+              <button role="tab" aria-selected="true">Miesięcznie</button>
+              <button role="tab" aria-selected="false">Rocznie −20%</button>
+            </div>
+          </div>
+        </div>
+        <div class="price-grid" data-stagger="80">
+          <article class="card price" data-reveal>
+            <div><span class="mono faint">Start</span><div class="price__amount">0 zł</div><span class="faint">dla jednoosobowych firm</span></div>
+            <ul><li>Do 10 faktur / mies.</li><li>E-faktury KSeF</li><li>Link do płatności</li></ul>
+            <a class="btn btn-ghost btn-block" href="#">Zacznij za darmo</a>
+          </article>
+          <article class="card price price--featured ring-grad" data-reveal="scale">
+            <div class="between"><span class="mono hl">Pro</span><span class="badge">Najczęściej wybierany</span></div>
+            <div class="price__amount hl">79 zł<span class="faint" style="font-size:var(--step-0)"> /mies.</span></div>
+            <ul><li>Faktury bez limitu</li><li>Automatyczne przypomnienia</li><li>Raporty i prognoza gotówki</li><li>Wielu użytkowników</li></ul>
+            <a class="btn btn-primary btn-block" href="#">Wybierz Pro</a>
+          </article>
+          <article class="card price" data-reveal>
+            <div><span class="mono faint">Biznes</span><div class="price__amount">na wycenę</div><span class="faint">dla zespołów i biur</span></div>
+            <ul><li>Wszystko z Pro</li><li>Integracje i API</li><li>Dedykowane wsparcie</li></ul>
+            <a class="btn btn-ghost btn-block" href="#">Porozmawiajmy</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="section" id="faq" data-shot="faq">
+      <div class="container container-narrow stack" data-stagger="60">
+        <h2 class="center-text" data-reveal>Częste pytania</h2>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Czy Omiko jest zgodne z KSeF?</summary><p class="muted" style="margin-top:var(--space-3)">Tak — faktury wystawione w Omiko są wysyłane do Krajowego Systemu e-Faktur, z pełną obsługą numeracji i statusów.</p></details>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Czy mogę przenieść dane z innego programu?</summary><p class="muted" style="margin-top:var(--space-3)">Tak, import kontrahentów i historii faktur z pliku lub przez integrację.</p></details>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Jak działają płatności online?</summary><p class="muted" style="margin-top:var(--space-3)">Do każdej faktury dołączamy bezpieczny link do zapłaty; status aktualizuje się automatycznie.</p></details>
+        <details class="card" data-reveal><summary style="cursor:pointer;font-weight:700">Czy jest okres próbny?</summary><p class="muted" style="margin-top:var(--space-3)">Plan Start jest darmowy bezterminowo, a Pro możesz przetestować bez zobowiązań.</p></details>
+      </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="section" data-shot="cta">
+      <div class="container">
+        <div class="card mesh center-text stack ring-grad" style="padding:clamp(3rem,2rem+6vw,7rem)" data-reveal="scale">
+          <h2 class="display" style="font-size:var(--step-4)">Wystaw pierwszą fakturę w Omiko już dziś</h2>
+          <p class="lead" style="margin-inline:auto">Za darmo, bez karty. Zobacz, ile czasu odzyskasz.</p>
+          <div class="cluster" style="justify-content:center">
+            <a class="btn btn-primary btn-lg" href="#">Załóż darmowe konto</a>
+            <a class="btn btn-ghost btn-lg" href="#funkcje">Zobacz funkcje</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container container-wide stack" style="--flow:var(--space-8)">
+      <div class="grid cols-4 keep-2">
+        <div class="col" style="--flow:var(--space-3)">
+          <a class="nav__logo" href="#top">omiko<span class="hl">.</span></a>
+          <p class="faint" style="max-width:32ch">Fakturowanie i e-faktury KSeF, które oszczędzają Twój czas.</p>
+        </div>
+        <div class="col" style="--flow:var(--space-2)"><span class="mono faint">Produkt</span><a class="muted underline-grow" href="#funkcje">Funkcje</a><a class="muted underline-grow" href="#cennik">Cennik</a><a class="muted underline-grow" href="#faq">FAQ</a></div>
+        <div class="col" style="--flow:var(--space-2)"><span class="mono faint">Firma</span><a class="muted underline-grow" href="#">O nas</a><a class="muted underline-grow" href="#">Kontakt</a><a class="muted underline-grow" href="#">Blog</a></div>
+        <div class="col" style="--flow:var(--space-2)"><span class="mono faint">Kontakt</span><a class="muted underline-grow" href="mailto:kontakt@omiko.pl">kontakt@omiko.pl</a></div>
+      </div>
+      <hr class="divider" />
+      <div class="between">
+        <p class="faint">© 2026 Omiko. Wszelkie prawa zastrzeżone.</p>
+        <p class="faint mono">demo · Web Design Killer Setup</p>
+      </div>
+    </div>
+  </footer>
+
+  <script data-from="../../design-system/motion.js">
+/* =============================================================================
+   motion.js — Interakcje bez zależności. Działa z file:// (offline).
+   Dołącz: <script src="../../design-system/motion.js" defer></script>
+   Wszystko jest progresywne: bez JS strona nadal działa i jest widoczna.
+   ========================================================================== */
+(() => {
+  "use strict";
+  const root = document.documentElement;
+  root.classList.remove("no-js");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) root.classList.add("reduce-motion");
+  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+
+  /* --- 1. Reveal on scroll (+ stagger) ------------------------------------ */
+  const reveals = $$("[data-reveal]");
+  if (reveals.length && "IntersectionObserver" in window && !reduce) {
+    // opóźnienia kaskadowe dla dzieci w [data-stagger]
+    $$("[data-stagger]").forEach((group) => {
+      const step = parseFloat(group.dataset.stagger) || 80;
+      $$("[data-reveal]", group).forEach((el, i) => {
+        el.style.transitionDelay = `${i * step}ms`;
+      });
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+    reveals.forEach((el) => io.observe(el));
+  } else {
+    reveals.forEach((el) => el.classList.add("is-in"));
+  }
+
+  /* --- 2. Spotlight podążający za kursorem --------------------------------- */
+  $$(".spotlight").forEach((el) => {
+    el.addEventListener("pointermove", (ev) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${ev.clientX - r.left}px`);
+      el.style.setProperty("--my", `${ev.clientY - r.top}px`);
+    });
+  });
+
+  /* --- 3. Tilt 3D --------------------------------------------------------- */
+  if (!reduce) $$(".tilt").forEach((el) => {
+    const max = parseFloat(el.dataset.tilt) || 6;
+    el.addEventListener("pointermove", (ev) => {
+      const r = el.getBoundingClientRect();
+      const px = (ev.clientX - r.left) / r.width - .5;
+      const py = (ev.clientY - r.top) / r.height - .5;
+      el.style.setProperty("--ry", `${px * max}deg`);
+      el.style.setProperty("--rx", `${-py * max}deg`);
+    });
+    el.addEventListener("pointerleave", () => {
+      el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg");
+    });
+  });
+
+  /* --- 4. Liczniki (count-up) — <span data-count="1200" data-suffix="+"> --- */
+  const counters = $$("[data-count]");
+  if (counters.length && "IntersectionObserver" in window) {
+    const fmt = new Intl.NumberFormat("pl-PL");
+    const run = (el) => {
+      const to = parseFloat(el.dataset.count);
+      const suf = el.dataset.suffix || "";
+      const pre = el.dataset.prefix || "";
+      const dur = reduce ? 0 : (parseInt(el.dataset.dur) || 1400);
+      const start = performance.now();
+      const tick = (now) => {
+        const t = dur ? Math.min((now - start) / dur, 1) : 1;
+        const eased = 1 - Math.pow(1 - t, 3);
+        const val = to % 1 ? (to * eased).toFixed(1) : Math.round(to * eased);
+        el.textContent = pre + fmt.format(val) + suf;
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    counters.forEach((el) => io.observe(el));
+  }
+
+  /* --- 5. Nav: zmiana tła po scrollu + menu mobilne ----------------------- */
+  const nav = document.querySelector("[data-nav]");
+  if (nav) {
+    const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 24);
+    onScroll(); addEventListener("scroll", onScroll, { passive: true });
+    const toggle = nav.querySelector("[data-nav-toggle]");
+    if (toggle) toggle.addEventListener("click", () => {
+      const open = nav.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", String(open));
+      document.body.style.overflow = open ? "hidden" : "";
+    });
+    nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => {
+      nav.classList.remove("is-open"); document.body.style.overflow = "";
+    }));
+  }
+
+  /* --- 6. Przełącznik motywu (opcjonalny) --------------------------------- */
+  $$("[data-theme-toggle]").forEach((btn) => btn.addEventListener("click", () => {
+    const cur = root.getAttribute("data-theme") === "light" ? "light" : "dark";
+    root.setAttribute("data-theme", cur === "light" ? "dark" : "light");
+  }));
+
+  /* --- 7. Smooth-scroll dla kotwic # (z offsetem nav) --------------------- */
+  $$('a[href^="#"]').forEach((a) => {
+    a.addEventListener("click", (ev) => {
+      const id = a.getAttribute("href");
+      if (id.length < 2) return;
+      const t = document.querySelector(id);
+      if (!t) return;
+      ev.preventDefault();
+      t.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    });
+  });
+
+  /* --- 8. Prosty akordeon (FAQ) — <details> działa natywnie, tu tylko ARIA - */
+  $$("[data-tabs]").forEach((wrap) => {
+    const tabs = $$("[role=tab]", wrap);
+    const panels = $$("[role=tabpanel]", wrap);
+    tabs.forEach((tab, i) => tab.addEventListener("click", () => {
+      tabs.forEach((t) => { t.setAttribute("aria-selected", "false"); });
+      panels.forEach((p) => p.hidden = true);
+      tab.setAttribute("aria-selected", "true");
+      if (panels[i]) panels[i].hidden = false;
+    }));
+  });
+})();
+
+</script>
