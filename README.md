@@ -121,6 +121,31 @@ Dodaj `data-shot="nazwa"` na `<section>`. Flaga `--sections` zrobi osobny zrzut 
 ## Ruch / reveal w treści
 - `data-reveal` (lub `="left"/"right"/"scale"`) na elemencie, `data-stagger="80"` na rodzicu.
 - `.card-hover`, `.spotlight`, `.tilt`, liczniki `<span data-count="1200" data-suffix="+">`.
+
+### Warstwa „premium slider" (parallax / split / blur / sticky)
+Inspiracja warstwowymi sliderami produktowymi. Wszystko bez zależności, offline,
+z pełnym `prefers-reduced-motion` i degradacją bez JS (treść zawsze widoczna).
+
+- **`data-parallax="0.15"`** — warstwowy parallax przy scrollu; wartość = mnożnik
+  prędkości (ujemne dozwolone, np. `-0.1`). Ruch tylko `transform`, przez jedną
+  pętlę `requestAnimationFrame` + `scroll` passive; limit wychylenia: `--parallax-max`.
+  Stosuj na warstwach dekoracyjnych (poświaty, tła), nie na elementach `data-reveal`.
+- **`data-split`** — rozbija tekst na litery (`.char`) i wpuszcza je kaskadowo
+  (co `--split-stagger`, domyślnie 30 ms). Oryginał trafia do `aria-label`
+  (czytelny dla screen readerów), litery są `aria-hidden`. Odpalane tym samym
+  `IntersectionObserver` co `data-reveal` (klasa `.is-in`). Używaj na nagłówkach
+  bez zagnieżdżonych znaczników.
+- **`data-reveal="blur"`** (oraz `"blur-left"` / `"blur-right"`) — opcjonalny
+  wariant reveala z blurem kierunkowym. To NIE jest domyślne zachowanie revealów.
+- **`data-sticky-scene`** — sekcja przypięta na czas scrolla. Wewnątrz daj
+  `<div class="sticky-scene__pin">…</div>`. Postęp scrolla 0..1 jest wystawiany
+  jako `--progress` na elemencie sceny — użyj go w CSS potomków, np.
+  `width: calc(var(--progress) * 100%)` albo `transform: translateX(...)`.
+
+Tokeny tej warstwy (czasy/easingi/dystanse) są w `tokens.css`:
+`--split-stagger`, `--split-dur`, `--split-shift`, `--blur-in`, `--blur-shift`,
+`--blur-dur`, `--parallax-max`.
+
 Szczegóły: `design-system/effects.css` i `motion.js`.
 
 ## Motywy i palety (szybka zmiana charakteru)

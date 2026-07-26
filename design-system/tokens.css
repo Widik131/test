@@ -142,6 +142,17 @@
   --dur-3: 0.55s;
   --dur-4: 0.9s;
 
+  /* Warstwa "premium slider" (parallax / split / blur / sticky).
+     Wszystkie czasy, easingi i dystanse TU — nigdy na sztywno w kodzie animacji. */
+  --split-stagger: 30ms;          /* opóźnienie między literami (data-split) */
+  --split-dur:     var(--dur-3);  /* czas wejścia pojedynczej litery */
+  --split-shift:   0.6em;         /* dystans wejścia litery (w dół) */
+  --split-ease:    var(--ease-out);
+  --blur-in:       14px;          /* siła bluru kierunkowego (data-reveal=blur) */
+  --blur-shift:    26px;          /* dystans przy blur-reveal */
+  --blur-dur:      var(--dur-3);  /* czas przejścia blur-reveal */
+  --parallax-max:  40px;          /* bezpieczny limit wychylenia parallaxu */
+
   /* Warstwy z */
   --z-nav: 100;
   --z-overlay: 200;

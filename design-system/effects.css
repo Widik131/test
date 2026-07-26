@@ -146,3 +146,78 @@ body.grain-fixed::after {
 /* Obraz z maską zaokrągloną + delikatna ramka światła */
 .media-frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--surface-line); box-shadow: var(--shadow-lg); position: relative; }
 .media-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 1px 0 oklch(100% 0 0 / .12) inset; pointer-events: none; }
+
+/* =============================================================================
+   WARSTWA "PREMIUM SLIDER" — parallax / split / blur / sticky
+   Inspiracja: warstwowy parallax + kaskadowe wejścia + blur kierunkowy.
+   Zasady: animujemy tylko transform / opacity (+ jednorazowy filter przy blur).
+   Wszystkie dystanse/czasy/easingi pochodzą z tokens.css.
+   ========================================================================== */
+
+/* --- 1. PARALLAX (data-parallax="0.15") ---------------------------------------
+   motion.js ustawia inline transform: translate3d(0, Ypx, 0). Tu tylko wygładzenie
+   i will-change (element faktycznie animowany co scroll). Bez JS = brak transformu. */
+[data-parallax] { will-change: transform; transition: transform var(--dur-1) linear; }
+
+/* --- 2. BLUR REVEAL (opcja: data-reveal="blur" | "blur-left" | "blur-right") ---
+   Wariant reveala; NIE domyślny. filter animowany jednorazowo (nie per-frame). */
+[data-reveal="blur"],
+[data-reveal="blur-left"],
+[data-reveal="blur-right"] {
+  opacity: 0;
+  filter: blur(var(--blur-in));
+  transition: opacity var(--blur-dur) var(--ease-out),
+              transform var(--blur-dur) var(--ease-out),
+              filter var(--blur-dur) var(--ease-out);
+}
+[data-reveal="blur"]       { transform: translateY(var(--blur-shift)); }
+[data-reveal="blur-left"]  { transform: translateX(calc(-1 * var(--blur-shift))); }
+[data-reveal="blur-right"] { transform: translateX(var(--blur-shift)); }
+[data-reveal="blur"].is-in,
+[data-reveal="blur-left"].is-in,
+[data-reveal="blur-right"].is-in { opacity: 1; transform: none; filter: blur(0); }
+
+/* --- 3. SPLIT TEXT (data-split) -----------------------------------------------
+   motion.js dzieli tekst na .char (span) i ustawia --i. Kaskada odpalana klasą
+   .is-in z ISTNIEJĄCEGO IntersectionObservera (ten sam co data-reveal). */
+[data-split] .word { display: inline-block; white-space: nowrap; }  /* słowo nie łamie się w środku */
+[data-split] .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(var(--split-shift));
+  transition: opacity var(--split-dur) var(--split-ease),
+              transform var(--split-dur) var(--split-ease);
+  transition-delay: calc(var(--i, 0) * var(--split-stagger));
+}
+[data-split].is-in .char { opacity: 1; transform: none; }
+
+/* --- 4. STICKY SCENE (data-sticky-scene) --------------------------------------
+   Sekcja wyższa niż ekran; wewnętrzny .sticky-scene__pin przypina się na czas
+   scrolla. motion.js wystawia --progress (0..1) na elemencie sceny. */
+[data-sticky-scene] { position: relative; }
+.sticky-scene__pin {
+  position: sticky; top: 0; min-height: 100vh; min-height: 100svh;
+  display: grid; place-items: center; overflow: clip;
+}
+
+/* =============================================================================
+   REDUKCJA RUCHU + BRAK JS — stan końcowy, statycznie, nic ukryte
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] { transform: none !important; transition: none !important; }
+  [data-reveal="blur"], [data-reveal="blur-left"], [data-reveal="blur-right"] {
+    opacity: 1 !important; transform: none !important; filter: none !important;
+  }
+  [data-split] .char { opacity: 1 !important; transform: none !important; }
+}
+.reduce-motion [data-parallax] { transform: none; }
+.reduce-motion [data-reveal="blur"],
+.reduce-motion [data-reveal="blur-left"],
+.reduce-motion [data-reveal="blur-right"] { opacity: 1; transform: none; filter: none; }
+.reduce-motion [data-split] .char { opacity: 1; transform: none; }
+
+/* Bez JS: parallax nie ma transformu (OK), blur-reveal odsłaniamy, split zostaje
+   zwykłym tekstem (podziału dokonuje JS). */
+.no-js [data-reveal="blur"],
+.no-js [data-reveal="blur-left"],
+.no-js [data-reveal="blur-right"] { opacity: 1; transform: none; filter: none; }

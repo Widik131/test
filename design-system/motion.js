@@ -12,9 +12,38 @@
   if (reduce) root.classList.add("reduce-motion");
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
-  /* --- 1. Reveal on scroll (+ stagger) ------------------------------------ */
-  const reveals = $$("[data-reveal]");
-  if (reveals.length && "IntersectionObserver" in window && !reduce) {
+  /* --- 1. Split text (data-split) — litery w .char, kaskada przez .is-in ---
+     Dostępność: oryginalny tekst trafia do aria-label, litery są aria-hidden.
+     Dzielimy tylko gdy !reduce — inaczej zostaje zwykły, czytelny tekst. */
+  const splits = $$("[data-split]");
+  if (!reduce) splits.forEach((el) => {
+    if (el.dataset.splitReady) return;
+    const text = el.textContent;
+    el.setAttribute("aria-label", el.getAttribute("aria-label") || text.trim());
+    el.textContent = "";
+    let i = 0;
+    // Grupujemy litery w SŁOWA (nie łamią się w środku); spacje = punkty łamania linii.
+    for (const part of text.split(/(\s+)/)) {
+      if (part === "") continue;
+      if (/^\s+$/.test(part)) { el.appendChild(document.createTextNode(part)); continue; }
+      const word = document.createElement("span");
+      word.className = "word";
+      word.setAttribute("aria-hidden", "true");
+      for (const ch of part) {
+        const s = document.createElement("span");
+        s.className = "char";
+        s.style.setProperty("--i", i++);
+        s.textContent = ch;
+        word.appendChild(s);
+      }
+      el.appendChild(word);
+    }
+    el.dataset.splitReady = "1";
+  });
+
+  /* --- 2. Reveal on scroll (+ stagger) — TEN SAM IO obsługuje data-split --- */
+  const revealTargets = $$("[data-reveal]").concat(splits);
+  if (revealTargets.length && "IntersectionObserver" in window && !reduce) {
     // opóźnienia kaskadowe dla dzieci w [data-stagger]
     $$("[data-stagger]").forEach((group) => {
       const step = parseFloat(group.dataset.stagger) || 80;
@@ -27,9 +56,9 @@
         if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
-    reveals.forEach((el) => io.observe(el));
+    revealTargets.forEach((el) => io.observe(el));
   } else {
-    reveals.forEach((el) => el.classList.add("is-in"));
+    revealTargets.forEach((el) => el.classList.add("is-in"));
   }
 
   /* --- 2. Spotlight podążający za kursorem --------------------------------- */
@@ -131,13 +160,46 @@
     }));
   });
 
-  /* --- 9. FAILSAFE dla środowisk BEZ przewijania --------------------------
+  /* --- 9. Parallax warstwowy + sticky scene (jedna pętla rAF, scroll passive)
+     Animujemy WYŁĄCZNIE transform (parallax) i zmienną --progress (sticky).
+     will-change:transform tylko na elementach parallaxu. Wyłączone przy reduce. */
+  const parallaxEls = $$("[data-parallax]");
+  const scenes = $$("[data-sticky-scene]");
+  if (!reduce && (parallaxEls.length || scenes.length)) {
+    parallaxEls.forEach((el) => { el.style.willChange = "transform"; });
+    const maxPx = parseFloat(getComputedStyle(root).getPropertyValue("--parallax-max")) || 40;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      for (const el of parallaxEls) {
+        const speed = parseFloat(el.dataset.parallax) || 0;
+        const r = el.getBoundingClientRect();
+        const fromCenter = (r.top + r.height / 2) - vh / 2;   // px od środka ekranu
+        let y = -fromCenter * speed;
+        if (y > maxPx) y = maxPx; else if (y < -maxPx) y = -maxPx;
+        el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
+      }
+      for (const el of scenes) {
+        const r = el.getBoundingClientRect();
+        const span = el.offsetHeight - vh;
+        const p = span > 0 ? Math.min(Math.max(-r.top / span, 0), 1) : 0;
+        el.style.setProperty("--progress", p.toFixed(4));
+      }
+    };
+    const onScroll = () => { if (!ticking) { requestAnimationFrame(update); ticking = true; } };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll, { passive: true });
+    update();
+  }
+
+  /* --- 10. FAILSAFE dla środowisk BEZ przewijania -------------------------
      W podglądzie/iframe renderowanym na pełną wysokość treści nie ma
      wewnętrznego scrolla, więc IntersectionObserver nigdy nie odsłoni sekcji
      ani nie uruchomi liczników. Wtedy pokazujemy wszystko od razu.
      W normalnej przeglądarce (jest co przewijać) animacje wejścia działają jak zwykle. */
   const revealAll = () => {
-    $$("[data-reveal]:not(.is-in)").forEach((el) => { el.style.transitionDelay = "0ms"; el.classList.add("is-in"); });
+    $$("[data-reveal]:not(.is-in), [data-split]:not(.is-in)").forEach((el) => { el.style.transitionDelay = "0ms"; el.classList.add("is-in"); });
     counters.forEach(runCounter);
   };
   const failsafe = () => {

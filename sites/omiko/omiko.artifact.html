@@ -144,6 +144,17 @@
   --dur-3: 0.55s;
   --dur-4: 0.9s;
 
+  /* Warstwa "premium slider" (parallax / split / blur / sticky).
+     Wszystkie czasy, easingi i dystanse TU — nigdy na sztywno w kodzie animacji. */
+  --split-stagger: 30ms;          /* opóźnienie między literami (data-split) */
+  --split-dur:     var(--dur-3);  /* czas wejścia pojedynczej litery */
+  --split-shift:   0.6em;         /* dystans wejścia litery (w dół) */
+  --split-ease:    var(--ease-out);
+  --blur-in:       14px;          /* siła bluru kierunkowego (data-reveal=blur) */
+  --blur-shift:    26px;          /* dystans przy blur-reveal */
+  --blur-dur:      var(--dur-3);  /* czas przejścia blur-reveal */
+  --parallax-max:  40px;          /* bezpieczny limit wychylenia parallaxu */
+
   /* Warstwy z */
   --z-nav: 100;
   --z-overlay: 200;
@@ -580,6 +591,81 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 .media-frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--surface-line); box-shadow: var(--shadow-lg); position: relative; }
 .media-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 1px 0 oklch(100% 0 0 / .12) inset; pointer-events: none; }
 
+/* =============================================================================
+   WARSTWA "PREMIUM SLIDER" — parallax / split / blur / sticky
+   Inspiracja: warstwowy parallax + kaskadowe wejścia + blur kierunkowy.
+   Zasady: animujemy tylko transform / opacity (+ jednorazowy filter przy blur).
+   Wszystkie dystanse/czasy/easingi pochodzą z tokens.css.
+   ========================================================================== */
+
+/* --- 1. PARALLAX (data-parallax="0.15") ---------------------------------------
+   motion.js ustawia inline transform: translate3d(0, Ypx, 0). Tu tylko wygładzenie
+   i will-change (element faktycznie animowany co scroll). Bez JS = brak transformu. */
+[data-parallax] { will-change: transform; transition: transform var(--dur-1) linear; }
+
+/* --- 2. BLUR REVEAL (opcja: data-reveal="blur" | "blur-left" | "blur-right") ---
+   Wariant reveala; NIE domyślny. filter animowany jednorazowo (nie per-frame). */
+[data-reveal="blur"],
+[data-reveal="blur-left"],
+[data-reveal="blur-right"] {
+  opacity: 0;
+  filter: blur(var(--blur-in));
+  transition: opacity var(--blur-dur) var(--ease-out),
+              transform var(--blur-dur) var(--ease-out),
+              filter var(--blur-dur) var(--ease-out);
+}
+[data-reveal="blur"]       { transform: translateY(var(--blur-shift)); }
+[data-reveal="blur-left"]  { transform: translateX(calc(-1 * var(--blur-shift))); }
+[data-reveal="blur-right"] { transform: translateX(var(--blur-shift)); }
+[data-reveal="blur"].is-in,
+[data-reveal="blur-left"].is-in,
+[data-reveal="blur-right"].is-in { opacity: 1; transform: none; filter: blur(0); }
+
+/* --- 3. SPLIT TEXT (data-split) -----------------------------------------------
+   motion.js dzieli tekst na .char (span) i ustawia --i. Kaskada odpalana klasą
+   .is-in z ISTNIEJĄCEGO IntersectionObservera (ten sam co data-reveal). */
+[data-split] .word { display: inline-block; white-space: nowrap; }  /* słowo nie łamie się w środku */
+[data-split] .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(var(--split-shift));
+  transition: opacity var(--split-dur) var(--split-ease),
+              transform var(--split-dur) var(--split-ease);
+  transition-delay: calc(var(--i, 0) * var(--split-stagger));
+}
+[data-split].is-in .char { opacity: 1; transform: none; }
+
+/* --- 4. STICKY SCENE (data-sticky-scene) --------------------------------------
+   Sekcja wyższa niż ekran; wewnętrzny .sticky-scene__pin przypina się na czas
+   scrolla. motion.js wystawia --progress (0..1) na elemencie sceny. */
+[data-sticky-scene] { position: relative; }
+.sticky-scene__pin {
+  position: sticky; top: 0; min-height: 100vh; min-height: 100svh;
+  display: grid; place-items: center; overflow: clip;
+}
+
+/* =============================================================================
+   REDUKCJA RUCHU + BRAK JS — stan końcowy, statycznie, nic ukryte
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] { transform: none !important; transition: none !important; }
+  [data-reveal="blur"], [data-reveal="blur-left"], [data-reveal="blur-right"] {
+    opacity: 1 !important; transform: none !important; filter: none !important;
+  }
+  [data-split] .char { opacity: 1 !important; transform: none !important; }
+}
+.reduce-motion [data-parallax] { transform: none; }
+.reduce-motion [data-reveal="blur"],
+.reduce-motion [data-reveal="blur-left"],
+.reduce-motion [data-reveal="blur-right"] { opacity: 1; transform: none; filter: none; }
+.reduce-motion [data-split] .char { opacity: 1; transform: none; }
+
+/* Bez JS: parallax nie ma transformu (OK), blur-reveal odsłaniamy, split zostaje
+   zwykłym tekstem (podziału dokonuje JS). */
+.no-js [data-reveal="blur"],
+.no-js [data-reveal="blur-left"],
+.no-js [data-reveal="blur-right"] { opacity: 1; transform: none; filter: none; }
+
 </style>
 <style>
     /* ===== Charakter Omiko: chłodny granat + elektryczny cyjan-limonka ===== */
@@ -738,6 +824,18 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
     .quote{ font-family:var(--font-display); font-size:var(--step-2); line-height:1.3; letter-spacing:-0.02em; }
     .quote::before{ content:"\201C"; color:var(--accent); }
     .quote::after{ content:"\201D"; color:var(--accent); }
+
+    /* ===== Scena sticky (demo data-sticky-scene + --progress) ===== */
+    .omk-scene{ height:150vh; }
+    .omk-scene__bg{ position:absolute; top:50%; left:50%; z-index:0; pointer-events:none; white-space:nowrap;
+      font-family:var(--font-display); font-weight:700; font-size:min(42vw,32rem); line-height:1; letter-spacing:-.05em;
+      color:transparent; -webkit-text-stroke:1.5px color-mix(in oklch,var(--accent) 32%, transparent);
+      /* ruch napędzany postępem sceny (0..1) — czysty transform */
+      transform:translate(-50%,-50%) translateX(calc((var(--progress,0) - .5) * 46vw)); opacity:.6; }
+    .omk-scene__bar{ position:absolute; left:0; right:0; bottom:0; height:3px; background:var(--surface-line); z-index:2; }
+    .omk-scene__bar span{ display:block; height:100%; width:calc(var(--progress,0) * 100%);
+      background:linear-gradient(90deg,var(--accent),var(--accent-2)); box-shadow:0 0 14px var(--glow-1); }
+    .omk-scene__step{ transition:opacity var(--dur-2) var(--ease-out); }
   </style>
  lub przełącznik.
    ========================================================================== */
@@ -1168,6 +1266,81 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 .media-frame { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--surface-line); box-shadow: var(--shadow-lg); position: relative; }
 .media-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 1px 0 oklch(100% 0 0 / .12) inset; pointer-events: none; }
 
+/* =============================================================================
+   WARSTWA "PREMIUM SLIDER" — parallax / split / blur / sticky
+   Inspiracja: warstwowy parallax + kaskadowe wejścia + blur kierunkowy.
+   Zasady: animujemy tylko transform / opacity (+ jednorazowy filter przy blur).
+   Wszystkie dystanse/czasy/easingi pochodzą z tokens.css.
+   ========================================================================== */
+
+/* --- 1. PARALLAX (data-parallax="0.15") ---------------------------------------
+   motion.js ustawia inline transform: translate3d(0, Ypx, 0). Tu tylko wygładzenie
+   i will-change (element faktycznie animowany co scroll). Bez JS = brak transformu. */
+[data-parallax] { will-change: transform; transition: transform var(--dur-1) linear; }
+
+/* --- 2. BLUR REVEAL (opcja: data-reveal="blur" | "blur-left" | "blur-right") ---
+   Wariant reveala; NIE domyślny. filter animowany jednorazowo (nie per-frame). */
+[data-reveal="blur"],
+[data-reveal="blur-left"],
+[data-reveal="blur-right"] {
+  opacity: 0;
+  filter: blur(var(--blur-in));
+  transition: opacity var(--blur-dur) var(--ease-out),
+              transform var(--blur-dur) var(--ease-out),
+              filter var(--blur-dur) var(--ease-out);
+}
+[data-reveal="blur"]       { transform: translateY(var(--blur-shift)); }
+[data-reveal="blur-left"]  { transform: translateX(calc(-1 * var(--blur-shift))); }
+[data-reveal="blur-right"] { transform: translateX(var(--blur-shift)); }
+[data-reveal="blur"].is-in,
+[data-reveal="blur-left"].is-in,
+[data-reveal="blur-right"].is-in { opacity: 1; transform: none; filter: blur(0); }
+
+/* --- 3. SPLIT TEXT (data-split) -----------------------------------------------
+   motion.js dzieli tekst na .char (span) i ustawia --i. Kaskada odpalana klasą
+   .is-in z ISTNIEJĄCEGO IntersectionObservera (ten sam co data-reveal). */
+[data-split] .word { display: inline-block; white-space: nowrap; }  /* słowo nie łamie się w środku */
+[data-split] .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(var(--split-shift));
+  transition: opacity var(--split-dur) var(--split-ease),
+              transform var(--split-dur) var(--split-ease);
+  transition-delay: calc(var(--i, 0) * var(--split-stagger));
+}
+[data-split].is-in .char { opacity: 1; transform: none; }
+
+/* --- 4. STICKY SCENE (data-sticky-scene) --------------------------------------
+   Sekcja wyższa niż ekran; wewnętrzny .sticky-scene__pin przypina się na czas
+   scrolla. motion.js wystawia --progress (0..1) na elemencie sceny. */
+[data-sticky-scene] { position: relative; }
+.sticky-scene__pin {
+  position: sticky; top: 0; min-height: 100vh; min-height: 100svh;
+  display: grid; place-items: center; overflow: clip;
+}
+
+/* =============================================================================
+   REDUKCJA RUCHU + BRAK JS — stan końcowy, statycznie, nic ukryte
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] { transform: none !important; transition: none !important; }
+  [data-reveal="blur"], [data-reveal="blur-left"], [data-reveal="blur-right"] {
+    opacity: 1 !important; transform: none !important; filter: none !important;
+  }
+  [data-split] .char { opacity: 1 !important; transform: none !important; }
+}
+.reduce-motion [data-parallax] { transform: none; }
+.reduce-motion [data-reveal="blur"],
+.reduce-motion [data-reveal="blur-left"],
+.reduce-motion [data-reveal="blur-right"] { opacity: 1; transform: none; filter: none; }
+.reduce-motion [data-split] .char { opacity: 1; transform: none; }
+
+/* Bez JS: parallax nie ma transformu (OK), blur-reveal odsłaniamy, split zostaje
+   zwykłym tekstem (podziału dokonuje JS). */
+.no-js [data-reveal="blur"],
+.no-js [data-reveal="blur-left"],
+.no-js [data-reveal="blur-right"] { opacity: 1; transform: none; filter: none; }
+
 </style>
 
   <style>
@@ -1327,6 +1500,18 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
     .quote{ font-family:var(--font-display); font-size:var(--step-2); line-height:1.3; letter-spacing:-0.02em; }
     .quote::before{ content:"\201C"; color:var(--accent); }
     .quote::after{ content:"\201D"; color:var(--accent); }
+
+    /* ===== Scena sticky (demo data-sticky-scene + --progress) ===== */
+    .omk-scene{ height:150vh; }
+    .omk-scene__bg{ position:absolute; top:50%; left:50%; z-index:0; pointer-events:none; white-space:nowrap;
+      font-family:var(--font-display); font-weight:700; font-size:min(42vw,32rem); line-height:1; letter-spacing:-.05em;
+      color:transparent; -webkit-text-stroke:1.5px color-mix(in oklch,var(--accent) 32%, transparent);
+      /* ruch napędzany postępem sceny (0..1) — czysty transform */
+      transform:translate(-50%,-50%) translateX(calc((var(--progress,0) - .5) * 46vw)); opacity:.6; }
+    .omk-scene__bar{ position:absolute; left:0; right:0; bottom:0; height:3px; background:var(--surface-line); z-index:2; }
+    .omk-scene__bar span{ display:block; height:100%; width:calc(var(--progress,0) * 100%);
+      background:linear-gradient(90deg,var(--accent),var(--accent-2)); box-shadow:0 0 14px var(--glow-1); }
+    .omk-scene__step{ transition:opacity var(--dur-2) var(--ease-out); }
   </style>
 </head>
 <body class="grain-fixed">
@@ -1350,6 +1535,9 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 
     <!-- ===================== HERO ===================== -->
     <section class="omk-hero mesh aurora" data-shot="hero">
+      <!-- Dekoracyjne poświaty z parallaxem (warstwowy ruch przy scrollu) -->
+      <div class="glow-orb a" data-parallax="0.14" aria-hidden="true" style="width:360px;height:360px;top:-3rem;right:14%"></div>
+      <div class="glow-orb b" data-parallax="-0.10" aria-hidden="true" style="width:300px;height:300px;bottom:-4rem;left:-3rem"></div>
       <div class="container container-wide">
         <div class="omk-hero__grid">
           <div class="stack" data-stagger="90">
@@ -1429,7 +1617,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
       <div class="container container-wide">
         <div class="stack" style="margin-bottom:var(--space-16);max-width:60ch">
           <span class="eyebrow" data-reveal>Funkcje</span>
-          <h2 data-reveal>Wszystko, czego potrzebuje Twój obieg faktur — w jednym miejscu</h2>
+          <h2 data-reveal="blur">Wszystko, czego potrzebuje Twój obieg faktur — w jednym miejscu</h2>
         </div>
         <div class="grid" style="grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(200px,auto);--gap:var(--space-6)" data-stagger="70">
           <article class="card card-hover spotlight stack" style="grid-column:span 2" data-reveal>
@@ -1464,7 +1652,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
       <div class="container">
         <div class="stack center-text" style="margin-bottom:var(--space-16)">
           <span class="eyebrow" style="justify-content:center" data-reveal>Jak to działa</span>
-          <h2 data-reveal>Trzy kroki do faktury opłaconej na czas</h2>
+          <h2 data-reveal="blur">Trzy kroki do faktury opłaconej na czas</h2>
         </div>
         <div class="steps" data-stagger="120">
           <div class="step stack" data-reveal>
@@ -1480,6 +1668,20 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
             <h3>Rozlicz</h3><p class="muted">Śledzisz status, dostajesz powiadomienie o zapłacie, księgowość ma komplet.</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCENA STICKY (parallax + --progress) ===================== -->
+    <section class="sticky-scene omk-scene mesh" data-sticky-scene data-shot="scena">
+      <div class="sticky-scene__pin">
+        <span class="omk-scene__bg" aria-hidden="true">KSeF</span>
+        <div class="container center-text stack z1" style="--flow:var(--space-4)">
+          <span class="eyebrow" style="justify-content:center">Spokój</span>
+          <h2 class="display" style="font-size:var(--step-4)" data-split>Mniej klikania, więcej spokoju</h2>
+          <p class="lead" style="margin-inline:auto">Przewiń — pasek pokazuje drogę faktury od wystawienia do zapłaty.</p>
+          <div class="cluster" style="justify-content:center"><span class="badge badge-dot">na żywo: <span data-count="100" data-suffix="%">0</span> automatyzacji</span></div>
+        </div>
+        <div class="omk-scene__bar"><span></span></div>
       </div>
     </section>
 
@@ -1589,7 +1791,7 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
     <section class="section" data-shot="cta">
       <div class="container">
         <div class="card mesh center-text stack ring-grad" style="padding:clamp(3rem,2rem+6vw,7rem)" data-reveal="scale">
-          <h2 class="display" style="font-size:var(--step-4)">Wystaw pierwszą fakturę w Omiko już dziś</h2>
+          <h2 class="display" style="font-size:var(--step-4)" data-split>Wystaw pierwszą fakturę w Omiko już dziś</h2>
           <p class="lead" style="margin-inline:auto">Za darmo, bez karty. Zobacz, ile czasu odzyskasz.</p>
           <div class="cluster" style="justify-content:center">
             <a class="btn btn-primary btn-lg" href="#">Załóż darmowe konto</a>
@@ -1635,9 +1837,38 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
   if (reduce) root.classList.add("reduce-motion");
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
-  /* --- 1. Reveal on scroll (+ stagger) ------------------------------------ */
-  const reveals = $$("[data-reveal]");
-  if (reveals.length && "IntersectionObserver" in window && !reduce) {
+  /* --- 1. Split text (data-split) — litery w .char, kaskada przez .is-in ---
+     Dostępność: oryginalny tekst trafia do aria-label, litery są aria-hidden.
+     Dzielimy tylko gdy !reduce — inaczej zostaje zwykły, czytelny tekst. */
+  const splits = $$("[data-split]");
+  if (!reduce) splits.forEach((el) => {
+    if (el.dataset.splitReady) return;
+    const text = el.textContent;
+    el.setAttribute("aria-label", el.getAttribute("aria-label") || text.trim());
+    el.textContent = "";
+    let i = 0;
+    // Grupujemy litery w SŁOWA (nie łamią się w środku); spacje = punkty łamania linii.
+    for (const part of text.split(/(\s+)/)) {
+      if (part === "") continue;
+      if (/^\s+$/.test(part)) { el.appendChild(document.createTextNode(part)); continue; }
+      const word = document.createElement("span");
+      word.className = "word";
+      word.setAttribute("aria-hidden", "true");
+      for (const ch of part) {
+        const s = document.createElement("span");
+        s.className = "char";
+        s.style.setProperty("--i", i++);
+        s.textContent = ch;
+        word.appendChild(s);
+      }
+      el.appendChild(word);
+    }
+    el.dataset.splitReady = "1";
+  });
+
+  /* --- 2. Reveal on scroll (+ stagger) — TEN SAM IO obsługuje data-split --- */
+  const revealTargets = $$("[data-reveal]").concat(splits);
+  if (revealTargets.length && "IntersectionObserver" in window && !reduce) {
     // opóźnienia kaskadowe dla dzieci w [data-stagger]
     $$("[data-stagger]").forEach((group) => {
       const step = parseFloat(group.dataset.stagger) || 80;
@@ -1650,9 +1881,9 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
         if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
-    reveals.forEach((el) => io.observe(el));
+    revealTargets.forEach((el) => io.observe(el));
   } else {
-    reveals.forEach((el) => el.classList.add("is-in"));
+    revealTargets.forEach((el) => el.classList.add("is-in"));
   }
 
   /* --- 2. Spotlight podążający za kursorem --------------------------------- */
@@ -1754,13 +1985,46 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
     }));
   });
 
-  /* --- 9. FAILSAFE dla środowisk BEZ przewijania --------------------------
+  /* --- 9. Parallax warstwowy + sticky scene (jedna pętla rAF, scroll passive)
+     Animujemy WYŁĄCZNIE transform (parallax) i zmienną --progress (sticky).
+     will-change:transform tylko na elementach parallaxu. Wyłączone przy reduce. */
+  const parallaxEls = $$("[data-parallax]");
+  const scenes = $$("[data-sticky-scene]");
+  if (!reduce && (parallaxEls.length || scenes.length)) {
+    parallaxEls.forEach((el) => { el.style.willChange = "transform"; });
+    const maxPx = parseFloat(getComputedStyle(root).getPropertyValue("--parallax-max")) || 40;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      for (const el of parallaxEls) {
+        const speed = parseFloat(el.dataset.parallax) || 0;
+        const r = el.getBoundingClientRect();
+        const fromCenter = (r.top + r.height / 2) - vh / 2;   // px od środka ekranu
+        let y = -fromCenter * speed;
+        if (y > maxPx) y = maxPx; else if (y < -maxPx) y = -maxPx;
+        el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
+      }
+      for (const el of scenes) {
+        const r = el.getBoundingClientRect();
+        const span = el.offsetHeight - vh;
+        const p = span > 0 ? Math.min(Math.max(-r.top / span, 0), 1) : 0;
+        el.style.setProperty("--progress", p.toFixed(4));
+      }
+    };
+    const onScroll = () => { if (!ticking) { requestAnimationFrame(update); ticking = true; } };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll, { passive: true });
+    update();
+  }
+
+  /* --- 10. FAILSAFE dla środowisk BEZ przewijania -------------------------
      W podglądzie/iframe renderowanym na pełną wysokość treści nie ma
      wewnętrznego scrolla, więc IntersectionObserver nigdy nie odsłoni sekcji
      ani nie uruchomi liczników. Wtedy pokazujemy wszystko od razu.
      W normalnej przeglądarce (jest co przewijać) animacje wejścia działają jak zwykle. */
   const revealAll = () => {
-    $$("[data-reveal]:not(.is-in)").forEach((el) => { el.style.transitionDelay = "0ms"; el.classList.add("is-in"); });
+    $$("[data-reveal]:not(.is-in), [data-split]:not(.is-in)").forEach((el) => { el.style.transitionDelay = "0ms"; el.classList.add("is-in"); });
     counters.forEach(runCounter);
   };
   const failsafe = () => {
