@@ -49,7 +49,8 @@ html = html.replace(/<link\b[^>]*\brel=["']stylesheet["'][^>]*>/gi, (tag) => {
   let content = fs.readFileSync(file, "utf8");
   if (embedAssets) content = inlineCssUrls(content, path.dirname(file));
   css++;
-  return `<style data-from="${m[1]}">\n${content}\n</style>`;
+  // Escapuj ewentualny </style> w treści, by nie zamknął tagu przedwcześnie
+  return `<style data-from="${m[1]}">\n${content.replace(/<\/(style)/gi, "<\\/$1")}\n</style>`;
 });
 
 /* --- Osadź skrypty --- */
@@ -58,7 +59,9 @@ html = html.replace(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*><\/script>/gi, (t
   const file = path.resolve(dir, href);
   if (!fs.existsSync(file)) return tag;
   js++;
-  return `<script data-from="${href}">\n${fs.readFileSync(file, "utf8")}\n</script>`;
+  // Escapuj ewentualny </script> w treści (np. w komentarzu/stringu), by nie zamknął tagu
+  const code = fs.readFileSync(file, "utf8").replace(/<\/(script)/gi, "<\\/$1");
+  return `<script data-from="${href}">\n${code}\n</script>`;
 });
 
 /* --- Osadź obrazy w <img src> (opcjonalnie) --- */

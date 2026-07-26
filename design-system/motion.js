@@ -1,6 +1,7 @@
 /* =============================================================================
    motion.js — Interakcje bez zależności. Działa z file:// (offline).
-   Dołącz: <script src="../../design-system/motion.js" defer></script>
+   Dołącz w HTML na końcu body:
+     script src="../../design-system/motion.js" defer  (w znacznikach <>)
    Wszystko jest progresywne: bez JS strona nadal działa i jest widoczna.
    ========================================================================== */
 (() => {
@@ -57,27 +58,31 @@
 
   /* --- 4. Liczniki (count-up) — <span data-count="1200" data-suffix="+"> --- */
   const counters = $$("[data-count]");
-  if (counters.length && "IntersectionObserver" in window) {
-    const fmt = new Intl.NumberFormat("pl-PL");
-    const run = (el) => {
-      const to = parseFloat(el.dataset.count);
-      const suf = el.dataset.suffix || "";
-      const pre = el.dataset.prefix || "";
-      const dur = reduce ? 0 : (parseInt(el.dataset.dur) || 1400);
-      const start = performance.now();
-      const tick = (now) => {
-        const t = dur ? Math.min((now - start) / dur, 1) : 1;
-        const eased = 1 - Math.pow(1 - t, 3);
-        const val = to % 1 ? (to * eased).toFixed(1) : Math.round(to * eased);
-        el.textContent = pre + fmt.format(val) + suf;
-        if (t < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
+  const fmt = new Intl.NumberFormat("pl-PL");
+  const runCounter = (el) => {
+    if (el._counted) return; el._counted = true;   // idempotentne (IO + failsafe)
+    const to = parseFloat(el.dataset.count);
+    const suf = el.dataset.suffix || "";
+    const pre = el.dataset.prefix || "";
+    const dur = reduce ? 0 : (parseInt(el.dataset.dur) || 1400);
+    const start = performance.now();
+    const tick = (now) => {
+      const t = dur ? Math.min((now - start) / dur, 1) : 1;
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = to % 1 ? (to * eased).toFixed(1) : Math.round(to * eased);
+      el.textContent = pre + fmt.format(val) + suf;
+      if (t < 1) requestAnimationFrame(tick);
     };
+    requestAnimationFrame(tick);
+  };
+  if (counters.length && "IntersectionObserver" in window) {
+    const run = runCounter;
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } });
     }, { threshold: 0.6 });
     counters.forEach((el) => io.observe(el));
+  } else {
+    counters.forEach(runCounter);
   }
 
   /* --- 5. Nav: zmiana tła po scrollu + menu mobilne ----------------------- */
@@ -125,4 +130,22 @@
       if (panels[i]) panels[i].hidden = false;
     }));
   });
+
+  /* --- 9. FAILSAFE dla środowisk BEZ przewijania --------------------------
+     W podglądzie/iframe renderowanym na pełną wysokość treści nie ma
+     wewnętrznego scrolla, więc IntersectionObserver nigdy nie odsłoni sekcji
+     ani nie uruchomi liczników. Wtedy pokazujemy wszystko od razu.
+     W normalnej przeglądarce (jest co przewijać) animacje wejścia działają jak zwykle. */
+  const revealAll = () => {
+    $$("[data-reveal]:not(.is-in)").forEach((el) => { el.style.transitionDelay = "0ms"; el.classList.add("is-in"); });
+    counters.forEach(runCounter);
+  };
+  const failsafe = () => {
+    const el = document.scrollingElement || document.documentElement;
+    if (el.scrollHeight <= window.innerHeight + 8) revealAll();   // nie da się przewinąć → pokaż
+  };
+  if (document.readyState === "complete") failsafe();
+  else addEventListener("load", failsafe);
+  addEventListener("resize", failsafe, { passive: true });
+  setTimeout(failsafe, 500);
 })();
